@@ -6,8 +6,8 @@ import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 
 import ClientLayout from "./client-layout";
-
 import RootLayoutComponent from "components/layout/RootLayout";
+import { CartProvider } from "../context/CartContext";
 
 
 const josefinSans = Josefin_Sans({
@@ -122,7 +122,9 @@ export default function RootLayout({
         <RootLayoutComponent>
           {/* <Navbar /> */}
           <main className="">
-            <ClientLayout>{children}</ClientLayout>
+            <CartProvider>
+              <ClientLayout>{children}</ClientLayout>
+            </CartProvider>
           </main>
           {/* <Footer /> */}
         </RootLayoutComponent>

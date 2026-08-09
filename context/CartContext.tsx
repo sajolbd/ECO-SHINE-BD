@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { Product } from "../data/productsData";
 
 export interface CartItem {
@@ -52,6 +53,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const router = useRouter();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
@@ -102,6 +104,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
     }
     setIsCheckoutOpen(true);
+    if (typeof window !== "undefined") {
+      router.push("/checkout");
+    }
   };
 
   const closeCheckout = () => {
