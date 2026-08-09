@@ -4,6 +4,7 @@ import { CheckoutModal } from "../components/checkout/CheckoutModal";
 import { SuccessModal } from "../components/checkout/SuccessModal";
 import { FloatingCartButton } from "../components/cart/FloatingCartButton";
 import { CartProvider } from "../context/CartContext";
+import Footer from "../components/layout/Footer";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <CheckoutModal />
         <SuccessModal />
         <FloatingCartButton />
+        <Footer />
       </main>
     </CartProvider>
   );
