@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Phone, ShoppingBag, ShoppingCart, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { Phone, ShoppingBag, ShoppingCart, Eye } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Product } from "../../data/productsData";
 import { useCart } from "../../context/CartContext";
@@ -16,6 +17,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { openCheckout, addToCart } = useCart();
 
   const activeImage = product.images[selectedImageIndex] || product.images[0];
+  const productUrl = `/products/${product.id}`;
 
   const handleOrderNow = () => {
     openCheckout(product);
@@ -33,11 +35,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="bg-[#FAF8F4] border border-[#EFE7D8] rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300">
-      
-      {/* Product Image & Thumbnail Gallery */}
+    <div className="bg-[#FAF8F4] border border-[#EFE7D8] rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300 group">
+
+      {/* Product Image & Title Link */}
       <div>
-        <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white border border-slate-100 mb-3 group">
+        <Link href={productUrl} className="block relative w-full aspect-square rounded-xl overflow-hidden bg-white border border-slate-100 mb-3 cursor-pointer">
           <Image
             src={activeImage}
             alt={product.title}
@@ -46,16 +48,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
           />
           {product.badge && (
-            <span className="absolute top-2.5 left-2.5 px-2.5 py-1 bg-red-600 text-white text-[11px] font-bold rounded-md shadow-xs uppercase tracking-wide">
+            <span className="absolute top-2.5 left-2.5 px-2.5 py-1 bg-red-600 text-white text-[11px] font-bold rounded-md shadow-xs uppercase tracking-wide z-10">
               {product.badge}
             </span>
           )}
-        </div>
+          <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span className="px-3.5 py-1.5 bg-white/90 text-slate-900 rounded-full font-bold text-xs shadow-md flex items-center gap-1.5 backdrop-blur-xs">
+              <Eye className="w-3.5 h-3.5 text-primary" />
+              <span>বিস্তারিত দেখুন</span>
+            </span>
+          </div>
+        </Link>
 
         {/* Product Title */}
-        <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-snug mb-2 line-clamp-2">
-          {product.title}
-        </h3>
+        <Link href={productUrl} className="block group-hover:text-primary transition-colors">
+          <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-snug mb-2 line-clamp-2">
+            {product.title}
+          </h3>
+        </Link>
 
         {/* Unit / Subtitle */}
         {product.unit && (
@@ -77,9 +87,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* Stacked CTA Buttons (Exact match to uploaded design) */}
+      {/* Stacked CTA Buttons */}
       <div className="space-y-2 pt-2 border-t border-amber-200/50">
-        
+
+        {/* View Details Quick Link */}
+
+
         {/* 1. Order Now & Add to Cart Buttons */}
         <div className="flex items-center gap-2">
           <button
@@ -122,3 +135,4 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     </div>
   );
 };
+
