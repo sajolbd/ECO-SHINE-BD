@@ -75,22 +75,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
 
         {/* Price Tag */}
-        <div className="flex items-baseline gap-2 mb-4">
-          <span className="text-2xl sm:text-3xl font-black text-[#E00000]">
-            {product.price.toLocaleString("en-BD")}.00৳
+        <div className="flex flex-wrap items-baseline gap-1 sm:gap-2 mb-2 sm:mb-4">
+          <span className="text-base sm:text-3xl font-black text-[#E00000]">
+            {product.price.toLocaleString("en-BD")}৳
           </span>
           {product.originalPrice && (
-            <span className="text-sm font-semibold text-slate-400 line-through">
-              {product.originalPrice.toLocaleString("en-BD")}.00৳
+            <span className="text-[10px] sm:text-sm font-semibold text-slate-400 line-through">
+              {product.originalPrice.toLocaleString("en-BD")}৳
             </span>
           )}
         </div>
+
+        {/* View Details Button */}
+        <Link 
+          href={productUrl}
+          className="flex items-center justify-center gap-1.5 w-full py-1.5 sm:py-2.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 rounded-lg sm:rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 mb-2 sm:mb-3"
+        >
+          <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <span>বিস্তারিত দেখুন</span>
+        </Link>
       </div>
 
       {/* Stacked CTA Buttons */}
       <div className="space-y-2 pt-2 border-t border-amber-200/50">
 
-        {/* View Details Quick Link */}
 
 
         {/* 1. Order Now & Add to Cart Buttons */}
