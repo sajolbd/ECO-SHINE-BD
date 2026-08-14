@@ -92,19 +92,9 @@ export const Hero: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [windowWidth, setWindowWidth] = useState(1200);
     const touchStartX = useRef<number | null>(null);
 
     const totalItems = CAROUSEL_ITEMS.length;
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const handleResize = () => setWindowWidth(window.innerWidth);
-            handleResize();
-            window.addEventListener("resize", handleResize);
-            return () => window.removeEventListener("resize", handleResize);
-        }
-    }, []);
 
     const nextSlide = useCallback(() => {
         setActiveIndex((prev) => (prev + 1) % totalItems);
@@ -162,9 +152,9 @@ export const Hero: React.FC = () => {
                     </h1>
                 </div>
 
-                {/* Carousel Container - Displaying 2 Cards Side-by-Side */}
+                {/* 3D Collage Carousel Container - Scaled to ~1/3 screen height */}
                 <div
-                    className="relative w-full max-w-4xl h-[210px] sm:h-[280px] md:h-[310px] flex items-center justify-center my-1"
+                    className="relative w-full max-w-4xl h-[250px] sm:h-[280px] md:h-[310px] flex items-center justify-center my-1"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                     onTouchStart={handleTouchStart}
@@ -174,14 +164,14 @@ export const Hero: React.FC = () => {
                         const offset = getCardOffset(index);
                         const absOffset = Math.abs(offset);
 
-                        // Only render cards close to view
+                        // Only render cards within range -2 to +2
                         if (absOffset > 2) return null;
 
-                        const isVisible = offset === 0 || offset === 1;
-
-                        const isMobile = windowWidth < 640;
-                        const isTablet = windowWidth >= 640 && windowWidth < 768;
-                        const baseTranslate = isMobile ? 75 : isTablet ? 115 : 150;
+                        const isCenter = offset === 0;
+                        const isMidLeft = offset === -1;
+                        const isMidRight = offset === 1;
+                        const isEdgeLeft = offset === -2;
+                        const isEdgeRight = offset === 2;
 
                         let translateX = 0;
                         let scale = 1;
@@ -189,24 +179,36 @@ export const Hero: React.FC = () => {
                         let opacity = 1;
                         let rotateY = 0;
 
-                        if (offset === 0) {
-                            translateX = -baseTranslate;
+                        if (isCenter) {
+                            translateX = 0;
                             scale = 1;
                             zIndex = 40;
                             opacity = 1;
                             rotateY = 0;
-                        } else if (offset === 1) {
-                            translateX = baseTranslate;
-                            scale = 1;
-                            zIndex = 40;
-                            opacity = 1;
-                            rotateY = 0;
-                        } else {
-                            translateX = offset < 0 ? -baseTranslate * 2.5 : baseTranslate * 2.5;
-                            scale = 0.8;
+                        } else if (isMidLeft) {
+                            translateX = -145;
+                            scale = 0.85;
+                            zIndex = 25;
+                            opacity = 0.92;
+                            rotateY = 12;
+                        } else if (isMidRight) {
+                            translateX = 145;
+                            scale = 0.85;
+                            zIndex = 25;
+                            opacity = 0.92;
+                            rotateY = -12;
+                        } else if (isEdgeLeft) {
+                            translateX = -255;
+                            scale = 0.72;
                             zIndex = 10;
-                            opacity = 0;
-                            rotateY = 0;
+                            opacity = 0.65;
+                            rotateY = 22;
+                        } else if (isEdgeRight) {
+                            translateX = 255;
+                            scale = 0.72;
+                            zIndex = 10;
+                            opacity = 0.65;
+                            rotateY = -22;
                         }
 
                         return (
@@ -228,11 +230,10 @@ export const Hero: React.FC = () => {
                                 }}
                                 onClick={() => setActiveIndex(index)}
                                 style={{ perspective: 1000 }}
-                                className={`absolute cursor-pointer rounded-2xl sm:rounded-3xl overflow-hidden transition-shadow duration-300 ${
-                                    isVisible
-                                    ? "w-[140px] sm:w-[220px] md:w-[270px] h-[190px] sm:h-[260px] md:h-[300px] shadow-2xl shadow-emerald-950/20 ring-4 ring-white"
-                                    : "w-[110px] sm:sm:w-[170px] md:w-[220px] h-[150px] sm:h-[210px] md:h-[260px] shadow-lg"
-                                }`}
+                                className={`absolute cursor-pointer rounded-2xl sm:rounded-3xl overflow-hidden transition-shadow duration-300 ${isCenter
+                                    ? "w-[200px] sm:w-[240px] md:w-[270px] h-[240px] sm:h-[270px] md:h-[300px] shadow-2xl shadow-emerald-950/20 ring-4 ring-white"
+                                    : "w-[160px] sm:w-[190px] md:w-[220px] h-[200px] sm:h-[230px] md:h-[260px] shadow-lg hover:shadow-xl"
+                                    }`}
                             >
                                 {/* Background Product Image */}
                                 <div className="relative w-full h-full bg-slate-900">
@@ -241,7 +242,7 @@ export const Hero: React.FC = () => {
                                         alt={item.title}
                                         fill
                                         sizes="(max-width: 768px) 240px, 280px"
-                                        priority={isVisible}
+                                        priority={isCenter}
                                         className="object-cover object-center transition-transform duration-700 hover:scale-105"
                                     />
 
@@ -249,27 +250,25 @@ export const Hero: React.FC = () => {
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/30 to-transparent" />
 
                                     {/* Badge top-left */}
-                                    {item.badge && isVisible && (
-                                        <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 px-2.5 py-0.5 bg-emerald-600/90 backdrop-blur-md text-white text-[8px] sm:text-[10px] font-bold rounded-full uppercase tracking-wider shadow-md">
+                                    {item.badge && isCenter && (
+                                        <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-md">
                                             {item.badge}
                                         </div>
                                     )}
 
                                     {/* Rating Tag top-right */}
-                                    {isVisible && (
-                                        <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 px-1.5 py-0.5 sm:px-2 bg-slate-900/60 backdrop-blur-md text-amber-300 text-[9px] sm:text-[11px] font-semibold rounded-full flex items-center gap-0.5 sm:gap-1 border border-white/10">
-                                            <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400 text-amber-400" />
-                                            <span>{item.rating}</span>
-                                            <span className="text-white/70 text-[8px] sm:text-[9px]">({item.reviews})</span>
-                                        </div>
-                                    )}
+                                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-slate-900/60 backdrop-blur-md text-amber-300 text-[11px] font-semibold rounded-full flex items-center gap-1 border border-white/10">
+                                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                        <span>{item.rating}</span>
+                                        <span className="text-white/70 text-[9px]">({item.reviews})</span>
+                                    </div>
 
                                     {/* Card Bottom Details */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white flex flex-col justify-end">
-                                        <span className="text-[8px] sm:text-[11px] font-semibold text-emerald-400 uppercase tracking-wider mb-0.5">
+                                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white flex flex-col justify-end">
+                                        <span className="text-[10px] sm:text-[11px] font-semibold text-emerald-400 uppercase tracking-wider mb-0.5">
                                             {item.category}
                                         </span>
-                                        <h3 className="text-[10px] sm:text-sm md:text-base font-bold leading-snug line-clamp-2 text-white drop-shadow-sm">
+                                        <h3 className="text-xs sm:text-sm md:text-base font-bold leading-snug line-clamp-2 text-white drop-shadow-sm">
                                             {item.title}
                                         </h3>
                                     </div>
