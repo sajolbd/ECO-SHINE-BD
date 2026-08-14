@@ -43,32 +43,29 @@ export const ProductGridSection: React.FC = () => {
           <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 ${
-                activeCategory === "all"
+              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 ${activeCategory === "all"
                   ? "bg-primary text-white shadow-md scale-105"
                   : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-              }`}
+                }`}
             >
               সকল প্রোডাক্টস
             </button>
             <button
               onClick={() => setActiveCategory("autocare")}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 ${
-                activeCategory === "autocare"
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 ${activeCategory === "autocare"
                   ? "bg-primary text-white shadow-md scale-105"
                   : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-              }`}
+                }`}
             >
               <Car className="w-4 h-4" />
               <span>অটো কেয়ার & ওয়াশ</span>
             </button>
             <button
               onClick={() => setActiveCategory("homecare")}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 ${
-                activeCategory === "homecare"
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 ${activeCategory === "homecare"
                   ? "bg-primary text-white shadow-md scale-105"
                   : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-              }`}
+                }`}
             >
               <Home className="w-4 h-4" />
               <span>হোম & গ্রিজ ক্লিনার</span>
