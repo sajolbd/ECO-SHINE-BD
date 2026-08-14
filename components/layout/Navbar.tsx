@@ -16,139 +16,141 @@ export default function Navbar() {
   if (pathname === "/checkout") return null;
 
   return (
-    <header className="sticky top-0 z-[9999] backdrop-blur-md bg-white/95 border-b border-slate-100 shadow-xs transition-all duration-300">
-      {/* Top Bar */}
-      <div className="flex h-[44px] overflow-hidden text-white text-xs lg:text-sm">
-        {/* Left: welcome panel */}
-        <div className="relative hidden lg:flex items-center pl-6 pr-12 bg-secondary shrink-0">
-          <span className="font-semibold tracking-wide">
-            স্বাগতম ইকো সাইন বাংলাদেশে - পরিবেশবান্ধব ক্লিনিং সলিউশন
-          </span>
-          {/* angled right edge */}
-          <span
-            className="absolute right-[-20px] top-0 h-full w-10 bg-secondary"
-            style={{ clipPath: "polygon(0 0, 0 100%, 100% 100%)" }}
-          />
-        </div>
+    <>
+      <header className="sticky top-0 z-[9999] backdrop-blur-md bg-white/95 border-b border-slate-100 shadow-xs">
+        {/* Top Bar */}
+        <div className="flex h-[44px] overflow-hidden text-white text-xs lg:text-sm">
+          {/* Left: welcome panel */}
+          <div className="relative hidden lg:flex items-center pl-6 pr-12 bg-secondary shrink-0">
+            <span className="font-semibold tracking-wide">
+              স্বাগতম ইকো সাইন বাংলাদেশে - পরিবেশবান্ধব ক্লিনিং সলিউশন
+            </span>
+            {/* angled right edge */}
+            <span
+              className="absolute right-[-20px] top-0 h-full w-10 bg-secondary"
+              style={{ clipPath: "polygon(0 0, 0 100%, 100% 100%)" }}
+            />
+          </div>
 
-        {/* Right: contact panel */}
-        <div className="flex flex-1 items-center justify-end gap-0 bg-primary px-4 lg:px-6">
-          <a
-            href="tel:+8801958058359"
-            className="flex items-center gap-1.5 px-4 hover:opacity-90 transition-opacity border-r border-white/20 h-full text-xs font-bold"
-          >
-            <Phone size={13} />
-            <span>01958-058359</span>
-          </a>
-
-          <a
-            href="mailto:bdecoshine@gmail.com"
-            className="flex items-center gap-1.5 px-4 hover:opacity-90 transition-opacity border-r border-white/20 h-full text-xs font-bold"
-          >
-            <Mail size={13} />
-            <span className="hidden md:inline">bdecoshine@gmail.com</span>
-          </a>
-
-          <a
-            href="https://wa.me/8801958058359"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-4 hover:bg-emerald-600 transition-colors h-full text-xs font-bold bg-emerald-500"
-          >
-            <svg
-              className="w-4 h-4 fill-current"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+          {/* Right: contact panel */}
+          <div className="flex flex-1 items-center justify-end gap-0 bg-primary px-4 lg:px-6">
+            <a
+              href="tel:+8801958058359"
+              className="flex items-center gap-1.5 px-4 hover:opacity-90 transition-opacity border-r border-white/20 h-full text-xs font-bold"
             >
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.37 5.378 0 12.013 0c3.216.001 6.24 1.253 8.514 3.53 2.274 2.277 3.524 5.305 3.523 8.524-.006 6.645-5.38 12.016-12.014 12.016-1.997-.001-3.956-.5-5.704-1.448L0 24zm6.59-4.846c1.62.962 3.21 1.453 4.857 1.458 5.353 0 9.709-4.348 9.715-9.715.003-2.599-1.01-5.043-2.854-6.89-1.842-1.848-4.292-2.865-6.892-2.868-5.361 0-9.719 4.357-9.724 9.728-.002 1.8.472 3.559 1.371 5.128l-.994 3.633 3.727-.976zm11.233-6.52c-.328-.163-1.942-.959-2.242-1.069-.3-.11-.518-.163-.735.163-.217.328-.838 1.059-1.029 1.277-.19.218-.38.245-.708.082-1.748-.871-2.91-1.523-4.066-3.504-.304-.523.304-.486.87-1.616.096-.191.048-.359-.024-.523-.072-.164-.635-1.53-.87-2.095-.23-.553-.48-.477-.653-.486-.17-.008-.364-.01-.557-.01-.193 0-.509.072-.776.359-.266.287-1.018.995-1.018 2.427 0 1.432 1.042 2.815 1.187 3.007.145.19 2.052 3.134 4.973 4.392.695.299 1.238.478 1.662.613.698.222 1.334.191 1.838.116.56-.083 1.942-.794 2.215-1.56.273-.765.273-1.42.192-1.56-.08-.14-.296-.223-.623-.387z" />
-            </svg>
-            <span className="hidden sm:inline">হোয়াটসঅ্যাপ চ্যাট</span>
-          </a>
-        </div>
-      </div>
+              <Phone size={13} />
+              <span>01958-058359</span>
+            </a>
 
-      {/* Main Navbar */}
-      <div className="bg-white border-t border-slate-100/60">
-        <Container>
-          <div className="relative flex h-20 items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex shrink-0 items-center z-1 p-1 ">
-              <Image
-                src="/images/logo.png"
-                alt="Eco Shine Bangladesh"
-                width={180}
-                height={55}
-                className="h-16 sm:h-24 w-auto object-contain"
-                priority
-              />
-            </Link>
+            <a
+              href="mailto:bdecoshine@gmail.com"
+              className="flex items-center gap-1.5 px-4 hover:opacity-90 transition-opacity border-r border-white/20 h-full text-xs font-bold"
+            >
+              <Mail size={13} />
+              <span className="hidden md:inline">bdecoshine@gmail.com</span>
+            </a>
 
-            {/* Desktop Menu */}
-            <nav className="hidden lg:flex items-center gap-10">
-              <Link
-                href="/"
-                className="nav-link font-extrabold text-sm text-slate-800 transition-colors py-2"
+            <a
+              href="https://wa.me/8801958058359"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 hover:bg-emerald-600 transition-colors h-full text-xs font-bold bg-emerald-500"
+            >
+              <svg
+                className="w-4 h-4 fill-current"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                হোম
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.37 5.378 0 12.013 0c3.216.001 6.24 1.253 8.514 3.53 2.274 2.277 3.524 5.305 3.523 8.524-.006 6.645-5.38 12.016-12.014 12.016-1.997-.001-3.956-.5-5.704-1.448L0 24zm6.59-4.846c1.62.962 3.21 1.453 4.857 1.458 5.353 0 9.709-4.348 9.715-9.715.003-2.599-1.01-5.043-2.854-6.89-1.842-1.848-4.292-2.865-6.892-2.868-5.361 0-9.719 4.357-9.724 9.728-.002 1.8.472 3.559 1.371 5.128l-.994 3.633 3.727-.976zm11.233-6.52c-.328-.163-1.942-.959-2.242-1.069-.3-.11-.518-.163-.735.163-.217.328-.838 1.059-1.029 1.277-.19.218-.38.245-.708.082-1.748-.871-2.91-1.523-4.066-3.504-.304-.523.304-.486.87-1.616.096-.191.048-.359-.024-.523-.072-.164-.635-1.53-.87-2.095-.23-.553-.48-.477-.653-.486-.17-.008-.364-.01-.557-.01-.193 0-.509.072-.776.359-.266.287-1.018.995-1.018 2.427 0 1.432 1.042 2.815 1.187 3.007.145.19 2.052 3.134 4.973 4.392.695.299 1.238.478 1.662.613.698.222 1.334.191 1.838.116.56-.083 1.942-.794 2.215-1.56.273-.765.273-1.42.192-1.56-.08-.14-.296-.223-.623-.387z" />
+              </svg>
+              <span className="hidden sm:inline">হোয়াটসঅ্যাপ চ্যাট</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Main Navbar */}
+        <div className="bg-white border-t border-slate-100/60">
+          <Container>
+            <div className="relative flex h-20 items-center justify-between">
+              {/* Logo */}
+              <Link href="/" className="flex shrink-0 items-center z-1 p-1 ">
+                <Image
+                  src="/images/logo.png"
+                  alt="Eco Shine Bangladesh"
+                  width={180}
+                  height={55}
+                  className="h-16 sm:h-24 w-auto object-contain"
+                  priority
+                />
               </Link>
 
-              {/* Category Dropdown */}
-              <div className="group relative py-6">
-                <button
-                  type="button"
-                  className="nav-link font-extrabold text-sm text-slate-800 flex items-center gap-1 cursor-pointer py-2 focus:outline-none"
+              {/* Desktop Menu */}
+              <nav className="hidden lg:flex items-center gap-10">
+                <Link
+                  href="/"
+                  className="nav-link font-extrabold text-sm text-slate-800 transition-colors py-2"
                 >
-                  <span>প্রোডাক্ট ক্যাটাগরি</span>
-                  <ChevronDown
-                    size={15}
-                    className="transition-transform duration-300 group-hover:rotate-180 text-slate-500"
-                  />
-                </button>
+                  হোম
+                </Link>
 
-                {/* Dropdown Box */}
-                <div className="absolute top-[80%] left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border border-slate-100 p-2.5 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
-                  <div className="flex flex-col gap-1">
-                    <Link
-                      href="/?category=autocare#products"
-                      className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
-                    >
-                      অটো কেয়ার & কার ওয়াশ (Auto Care)
-                    </Link>
-                    <Link
-                      href="/?category=homecare#products"
-                      className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
-                    >
-                      হোম & গ্রিজ ক্লিনার (Home Care)
-                    </Link>
+                {/* Category Dropdown */}
+                <div className="group relative py-6">
+                  <button
+                    type="button"
+                    className="nav-link font-extrabold text-sm text-slate-800 flex items-center gap-1 cursor-pointer py-2 focus:outline-none"
+                  >
+                    <span>প্রোডাক্ট ক্যাটাগরি</span>
+                    <ChevronDown
+                      size={15}
+                      className="transition-transform duration-300 group-hover:rotate-180 text-slate-500"
+                    />
+                  </button>
+
+                  {/* Dropdown Box */}
+                  <div className="absolute top-[80%] left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border border-slate-100 p-2.5 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
+                    <div className="flex flex-col gap-1">
+                      <Link
+                        href="/?category=autocare#products"
+                        className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
+                      >
+                        অটো কেয়ার & কার ওয়াশ (Auto Care)
+                      </Link>
+                      <Link
+                        href="/?category=homecare#products"
+                        className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
+                      >
+                        হোম & গ্রিজ ক্লিনার (Home Care)
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Right Button */}
-              <a
-                href="https://wa.me/8801958058359"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-primary text-white hover:bg-emerald-600 px-5 py-2.5 text-xs sm:text-sm font-bold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20 active:scale-95 transition-all duration-200"
+                {/* Right Button */}
+                <a
+                  href="https://wa.me/8801958058359"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-primary text-white hover:bg-emerald-600 px-5 py-2.5 text-xs sm:text-sm font-bold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20 active:scale-95 transition-all duration-200"
+                >
+                  <span>অর্ডার হটলাইন</span>
+                </a>
+              </nav>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setOpen(true)}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition lg:hidden z-10"
               >
-                <span>অর্ডার হটলাইন</span>
-              </a>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setOpen(true)}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition lg:hidden z-10"
-            >
-              <Menu size={22} />
-            </button>
-          </div>
-        </Container>
-      </div>
+                <Menu size={22} />
+              </button>
+            </div>
+          </Container>
+        </div>
+      </header>
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed inset-0 z-[100] transition-all duration-300 ${open ? "visible bg-black/60 backdrop-blur-xs opacity-100" : "invisible opacity-0"
+        className={`fixed inset-0 z-[10000] transition-all duration-300 ${open ? "visible bg-black/60 backdrop-blur-sm opacity-100" : "invisible opacity-0"
           }`}
       >
         <div
@@ -169,7 +171,7 @@ export default function Navbar() {
                   alt="Eco Shine Bangladesh"
                   width={140}
                   height={45}
-                  className="h-8 sm:h-9 w-auto object-contain bg-white p-1 rounded-lg border border-slate-100"
+                  className="h-24 sm:h-36 w-auto object-contain"
                 />
               </Link>
               <button
@@ -254,6 +256,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </header>
+    </>
   );
 }
