@@ -107,7 +107,7 @@ a {
   left: 0;
   width: 0;
   height: 3px;
-  background: linear-gradient(90deg, #641215, #9f2f35, #641215);
+  background: linear-gradient(90deg, #3AA833, #4ade80, #3AA833);
   border-radius: 0;
   transition: width 0.4s ease-in-out, border-radius 0.4s ease-in-out;
 }

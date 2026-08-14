@@ -8,6 +8,7 @@ import "./globals.css";
 import ClientLayout from "./client-layout";
 import RootLayoutComponent from "components/layout/RootLayout";
 import { CartProvider } from "../context/CartContext";
+import Navbar from "components/layout/Navbar";
 
 
 const josefinSans = Josefin_Sans({
@@ -120,7 +121,7 @@ export default function RootLayout({
         </noscript>
 
         <RootLayoutComponent>
-          {/* <Navbar /> */}
+          <Navbar />
           <main className="">
             <CartProvider>
               <ClientLayout>{children}</ClientLayout>

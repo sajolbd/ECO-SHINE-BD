@@ -1,12 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PRODUCTS_DATA, Product } from "../../data/productsData";
 import { ProductCard } from "./ProductCard";
 import { Car, Home, Sparkles } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export const ProductGridSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<"all" | "autocare" | "homecare">("all");
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams ? searchParams.get("category") : null;
+
+  useEffect(() => {
+    if (categoryParam === "autocare" || categoryParam === "homecare") {
+      setActiveCategory(categoryParam);
+    } else if (categoryParam === "all") {
+      setActiveCategory("all");
+    }
+  }, [categoryParam]);
 
   const autoCareProducts = PRODUCTS_DATA.filter((p) => p.categoryId === "autocare");
   const homeCareProducts = PRODUCTS_DATA.filter((p) => p.categoryId === "homecare");

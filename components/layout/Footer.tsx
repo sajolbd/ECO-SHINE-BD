@@ -62,7 +62,7 @@ const socialLinks = [
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-200 pt-12 border-t-4 border-primary">
-      
+
       {/* 1. Value Proposition Features Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 border-b border-slate-800">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -101,16 +101,16 @@ export default function Footer() {
       {/* 2. Main Footer Grid Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          
+
           {/* Column 1: Brand Info */}
           <div className="space-y-4">
-            <div className="bg-white p-2.5 rounded-2xl inline-block shadow-md">
+            <div className="  inline-block ">
               <Image
                 src="/images/logo.png"
                 alt="Eco Shine Bangladesh"
                 width={180}
                 height={50}
-                className="h-10 w-auto object-contain"
+                className="h-24 md:h-36 w-auto object-contain"
               />
             </div>
             <p className="text-sm text-slate-300 leading-relaxed font-normal">
@@ -184,7 +184,7 @@ export default function Footer() {
             <h3 className="text-lg font-bold text-white border-b-2 border-primary/40 pb-2 inline-block">
               অফিসিয়াল যোগাযোগ
             </h3>
-            
+
             <div className="space-y-3.5 text-sm text-slate-300">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/20 text-primary shrink-0 mt-0.5">
