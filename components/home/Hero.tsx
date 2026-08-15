@@ -88,20 +88,32 @@ const CAROUSEL_ITEMS: CarouselCard[] = [
     },
 ];
 
+interface Banner {
+    _id: string;
+    title?: string;
+    subtitle?: string;
+    ctaText?: string;
+    url?: string;
+    imageDesktop: string;
+    imageMobile: string;
+    isActive: boolean;
+    displayOrder: number;
+}
+
 export const Hero: React.FC = () => {
     const [heroBadge, setHeroBadge] = useState("Bangladesh's #1 Eco-Shine & Renovation Hub");
     const [heroHeading, setHeroHeading] = useState("Shine Your World With Eco Shine");
+    const [banners, setBanners] = useState<Banner[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const touchStartX = useRef<number | null>(null);
 
-    const totalItems = CAROUSEL_ITEMS.length;
-
     useEffect(() => {
-        const fetchHero = async () => {
+        const fetchHeroAndBanners = async () => {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+            // 1. Fetch homepage text
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
                 const response = await fetch(`${apiUrl}/api/homepage`);
                 const data = await response.json();
                 if (data.success && data.homepage) {
@@ -111,9 +123,49 @@ export const Hero: React.FC = () => {
             } catch (err) {
                 console.log("Failed to load dynamic hero from API, using static text.");
             }
+
+            // 2. Fetch banners
+            try {
+                const response = await fetch(`${apiUrl}/api/banners`);
+                const data = await response.json();
+                if (data.success && data.banners && data.banners.length > 0) {
+                    const activeBanners = data.banners
+                        .filter((b: any) => b.isActive)
+                        .sort((a: any, b: any) => a.displayOrder - b.displayOrder);
+                    setBanners(activeBanners);
+                }
+            } catch (err) {
+                console.log("Failed to load dynamic banners from API:", err);
+            }
         };
-        fetchHero();
+        fetchHeroAndBanners();
     }, []);
+
+    const itemsToRender = banners.length > 0
+        ? banners.map((b) => ({
+            id: b._id,
+            title: b.title || "",
+            category: b.subtitle || "",
+            rating: "5.0",
+            reviews: b.ctaText || "Eco Shine",
+            image: b.imageDesktop,
+            mobileImage: b.imageMobile,
+            url: b.url || "/#products",
+            badge: b.ctaText,
+          }))
+        : CAROUSEL_ITEMS.map((item) => ({
+            id: String(item.id),
+            title: item.title,
+            category: item.category,
+            rating: item.rating,
+            reviews: item.reviews,
+            image: item.image,
+            mobileImage: item.image,
+            url: "/#products",
+            badge: item.badge,
+          }));
+
+    const totalItems = itemsToRender.length;
 
     const nextSlide = useCallback(() => {
         setActiveIndex((prev) => (prev + 1) % totalItems);
@@ -179,7 +231,7 @@ export const Hero: React.FC = () => {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {CAROUSEL_ITEMS.map((item, index) => {
+                    {itemsToRender.map((item, index) => {
                         const offset = getCardOffset(index);
                         const absOffset = Math.abs(offset);
 
@@ -247,23 +299,43 @@ export const Hero: React.FC = () => {
                                     damping: 25,
                                     mass: 0.8,
                                 }}
-                                onClick={() => setActiveIndex(index)}
+                                onClick={() => {
+                                    if (isCenter) {
+                                        if (item.url) window.location.href = item.url;
+                                    } else {
+                                        setActiveIndex(index);
+                                    }
+                                }}
                                 style={{ perspective: 1000 }}
                                 className={`absolute cursor-pointer rounded-2xl sm:rounded-3xl overflow-hidden transition-shadow duration-300 ${isCenter
                                     ? "w-[200px] sm:w-[240px] md:w-[270px] h-[240px] sm:h-[270px] md:h-[300px] shadow-2xl shadow-emerald-950/20 ring-4 ring-white"
                                     : "w-[160px] sm:w-[190px] md:w-[220px] h-[200px] sm:h-[230px] md:h-[260px] shadow-lg hover:shadow-xl"
                                     }`}
                             >
-                                {/* Background Product Image */}
+                                {/* Background Product/Banner Image */}
                                 <div className="relative w-full h-full bg-slate-900">
-                                    <Image
-                                        src={item.image}
-                                        alt={item.title}
-                                        fill
-                                        sizes="(max-width: 768px) 240px, 280px"
-                                        priority={isCenter}
-                                        className="object-cover object-center transition-transform duration-700 hover:scale-105"
-                                    />
+                                    {/* Desktop Image */}
+                                    <div className="hidden sm:block absolute inset-0">
+                                        <Image
+                                            src={item.image}
+                                            alt={item.title}
+                                            fill
+                                            sizes="(max-width: 768px) 240px, 280px"
+                                            priority={isCenter}
+                                            className="object-cover object-center transition-transform duration-700 hover:scale-105"
+                                        />
+                                    </div>
+                                    {/* Mobile Image */}
+                                    <div className="block sm:hidden absolute inset-0">
+                                        <Image
+                                            src={item.mobileImage}
+                                            alt={item.title}
+                                            fill
+                                            sizes="(max-width: 768px) 240px, 280px"
+                                            priority={isCenter}
+                                            className="object-cover object-center transition-transform duration-700 hover:scale-105"
+                                        />
+                                    </div>
 
                                     {/* Gradient Overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/30 to-transparent" />
