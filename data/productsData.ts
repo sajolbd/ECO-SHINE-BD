@@ -18,7 +18,7 @@ export interface Product {
   id: string;
   title: string;
   category: string;
-  categoryId: "autocare" | "homecare";
+  categoryId: string;
   price: number;
   originalPrice?: number;
   rating: number;
@@ -38,7 +38,7 @@ export interface Product {
 }
 
 export interface CategoryTab {
-  id: "autocare" | "homecare";
+  id: string;
   name: string;
   iconName: string;
 }

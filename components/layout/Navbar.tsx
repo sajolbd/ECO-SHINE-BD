@@ -3,14 +3,47 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Phone, Mail, X, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Container from "components/shared/Container";
 import Image from "next/image";
+import { API_BASE } from "../../lib/api";
+
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+  status: "active" | "inactive";
+  displayOrder: number;
+}
+
+const STATIC_CATEGORIES: Category[] = [
+  { _id: "1", name: "অটো কেয়ার & কার ওয়াশ (Auto Care)", slug: "autocare", status: "active", displayOrder: 1 },
+  { _id: "2", name: "হোম & গ্রিজ ক্লিনার (Home Care)", slug: "homecare", status: "active", displayOrder: 2 },
+];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const pathname = usePathname();
+  const [categories, setCategories] = useState<Category[]>(STATIC_CATEGORIES);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || API_BASE || "http://localhost:5000";
+        const response = await fetch(`${apiUrl}/api/categories?status=active`);
+        const data = await response.json();
+        if (data.success && data.categories && data.categories.length > 0) {
+          setCategories(data.categories);
+        }
+      } catch (err) {
+        console.error("Failed to load categories in navbar, using static fallback:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // If we are on the checkout page, do not render the main navbar
   if (pathname === "/checkout") return null;
@@ -109,18 +142,15 @@ export default function Navbar() {
                   {/* Dropdown Box */}
                   <div className="absolute top-[80%] left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border border-slate-100 p-2.5 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
                     <div className="flex flex-col gap-1">
-                      <Link
-                        href="/?category=autocare#products"
-                        className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
-                      >
-                        অটো কেয়ার & কার ওয়াশ (Auto Care)
-                      </Link>
-                      <Link
-                        href="/?category=homecare#products"
-                        className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
-                      >
-                        হোম & গ্রিজ ক্লিনার (Home Care)
-                      </Link>
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/?category=${cat.slug}#products`}
+                          className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -216,23 +246,19 @@ export default function Navbar() {
 
                 {/* Submenu */}
                 <div
-                  className={`overflow-hidden transition-all duration-300 flex flex-col pl-4 gap-0.5 ${mobileCategoriesOpen ? "max-h-[200px] pb-3" : "max-h-0"
+                  className={`overflow-hidden transition-all duration-300 flex flex-col pl-4 gap-0.5 ${mobileCategoriesOpen ? "max-h-[300px] pb-3" : "max-h-0"
                     }`}
                 >
-                  <Link
-                    href="/?category=autocare#products"
-                    className="py-2.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-primary transition-colors"
-                    onClick={() => setOpen(false)}
-                  >
-                    অটো কেয়ার & কার ওয়াশ (Auto Care)
-                  </Link>
-                  <Link
-                    href="/?category=homecare#products"
-                    className="py-2.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-primary transition-colors"
-                    onClick={() => setOpen(false)}
-                  >
-                    হোম & গ্রিজ ক্লিনার (Home Care)
-                  </Link>
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat.slug}
+                      href={`/?category=${cat.slug}#products`}
+                      className="py-2.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-primary transition-colors"
+                      onClick={() => setOpen(false)}
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
