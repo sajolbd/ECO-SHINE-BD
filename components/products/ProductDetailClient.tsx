@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -84,7 +84,27 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   const activeImage =
     product.images[selectedImageIndex] || product.images[0] || "/images/products/product-1.jpeg";
 
-  const relatedProducts = getRelatedProducts(product.id, product.categoryId, 4);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+  // Fetch related products from API with static fallback
+  useEffect(() => {
+    const fetchRelated = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const response = await fetch(`${apiUrl}/api/products?categoryId=${product.categoryId}&limit=10`);
+        const data = await response.json();
+        if (data.success && data.products && data.products.length > 0) {
+          const filtered = data.products.filter((p: Product) => p.id !== product.id).slice(0, 4);
+          setRelatedProducts(filtered);
+        } else {
+          setRelatedProducts(getRelatedProducts(product.id, product.categoryId, 4));
+        }
+      } catch (err) {
+        setRelatedProducts(getRelatedProducts(product.id, product.categoryId, 4));
+      }
+    };
+    fetchRelated();
+  }, [product]);
 
   // Calculate discount percent
   const discountPercent = product.originalPrice

@@ -89,12 +89,31 @@ const CAROUSEL_ITEMS: CarouselCard[] = [
 ];
 
 export const Hero: React.FC = () => {
+    const [heroBadge, setHeroBadge] = useState("Bangladesh's #1 Eco-Shine & Renovation Hub");
+    const [heroHeading, setHeroHeading] = useState("Shine Your World With Eco Shine");
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const touchStartX = useRef<number | null>(null);
 
     const totalItems = CAROUSEL_ITEMS.length;
+
+    useEffect(() => {
+        const fetchHero = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+                const response = await fetch(`${apiUrl}/api/homepage`);
+                const data = await response.json();
+                if (data.success && data.homepage) {
+                    if (data.homepage.heroBadge) setHeroBadge(data.homepage.heroBadge);
+                    if (data.homepage.heroHeading) setHeroHeading(data.homepage.heroHeading);
+                }
+            } catch (err) {
+                console.log("Failed to load dynamic hero from API, using static text.");
+            }
+        };
+        fetchHero();
+    }, []);
 
     const nextSlide = useCallback(() => {
         setActiveIndex((prev) => (prev + 1) % totalItems);
@@ -145,10 +164,10 @@ export const Hero: React.FC = () => {
                 <div className="text-center mb-4 md:mb-6 max-w-2xl mx-auto">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide border border-primary/20 mb-2 shadow-xs">
                         <Sparkles className="w-3.5 h-3.5 text-primary" />
-                        <span>Bangladesh's #1 Eco-Shine & Renovation Hub</span>
+                        <span>{heroBadge}</span>
                     </div>
                     <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                        Shine Your World With <span className="text-primary">Eco Shine</span>
+                        {heroHeading}
                     </h1>
                 </div>
 

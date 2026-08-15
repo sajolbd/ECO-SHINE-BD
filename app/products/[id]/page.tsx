@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PRODUCTS_DATA, getProductById } from "../../../data/productsData";
+import { PRODUCTS_DATA, getProductById as getStaticProductById } from "../../../data/productsData";
 import { ProductDetailClient } from "../../../components/products/ProductDetailClient";
 import Footer from "../../../components/layout/Footer";
 import { FloatingCartButton } from "../../../components/cart/FloatingCartButton";
@@ -11,10 +11,26 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+async function getProduct(id: string) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const res = await fetch(`${apiUrl}/api/products/${id}`, { next: { revalidate: 3600 } });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.product) {
+        return data.product;
+      }
+    }
+  } catch (err) {
+    console.log(`Failed to fetch product ${id} from API, falling back to static database:`, err);
+  }
+  return getStaticProductById(id);
+}
+
 // Generate dynamic SEO metadata
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = getProductById(id);
+  const product = await getProduct(id);
 
   if (!product) {
     return {
@@ -73,7 +89,7 @@ export async function generateStaticParams() {
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const product = getProductById(id);
+  const product = await getProduct(id);
 
   if (!product) {
     notFound();

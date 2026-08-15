@@ -7,9 +7,26 @@ import { Car, Home, Sparkles } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 export const ProductGridSection: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>(PRODUCTS_DATA);
   const [activeCategory, setActiveCategory] = useState<"all" | "autocare" | "homecare">("all");
   const searchParams = useSearchParams();
   const categoryParam = searchParams ? searchParams.get("category") : null;
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const response = await fetch(`${apiUrl}/api/products?limit=100`);
+        const data = await response.json();
+        if (data.success && data.products && data.products.length > 0) {
+          setProducts(data.products);
+        }
+      } catch (err) {
+        console.log("Failed to load products from API backend, using static database:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     if (categoryParam === "autocare" || categoryParam === "homecare") {
@@ -19,8 +36,8 @@ export const ProductGridSection: React.FC = () => {
     }
   }, [categoryParam]);
 
-  const autoCareProducts = PRODUCTS_DATA.filter((p) => p.categoryId === "autocare");
-  const homeCareProducts = PRODUCTS_DATA.filter((p) => p.categoryId === "homecare");
+  const autoCareProducts = products.filter((p) => p.categoryId === "autocare");
+  const homeCareProducts = products.filter((p) => p.categoryId === "homecare");
 
   return (
     <section className="py-12 md:py-16 bg-slate-50/60" id="products">

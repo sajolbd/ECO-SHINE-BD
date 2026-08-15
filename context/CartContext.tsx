@@ -113,11 +113,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsCheckoutOpen(false);
   };
 
-  const submitOrder = ({
+  const submitOrder = async ({
     customerName,
     phone,
     address,
     deliveryArea,
+    note,
   }: {
     customerName: string;
     phone: string;
@@ -125,33 +126,54 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     deliveryArea: "inside" | "outside";
     note?: string;
   }) => {
-    const deliveryFee = deliveryArea === "inside" ? 70 : 130;
-    const orderSubtotal = subtotal;
-    const total = orderSubtotal + deliveryFee;
-    const orderId = `ESB-${Math.floor(100000 + Math.random() * 900000)}`;
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const response = await fetch(`${apiUrl}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName,
+          phone,
+          address,
+          deliveryArea,
+          note,
+          items: cart.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+          })),
+        }),
+      });
 
-    const newOrder: OrderDetails = {
-      orderId,
-      customerName,
-      phone,
-      address,
-      deliveryArea: deliveryArea === "inside" ? "ঢাকার ভেতরে (৭০৳)" : "ঢাকার বাইরে (১৩০৳)",
-      deliveryFee,
-      items: [...cart],
-      subtotal: orderSubtotal,
-      total,
-      paymentMethod: "ক্যাশ অন ডেলিভারি (Cash on Delivery)",
-      date: new Date().toLocaleDateString("bn-BD", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-    };
+      const data = await response.json();
 
-    setPlacedOrder(newOrder);
-    setIsCheckoutOpen(false);
-    clearCart();
-    setIsSuccessOpen(true);
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to place order.");
+      }
+
+      if (data.success && data.order) {
+        const order = data.order;
+        const newOrder: OrderDetails = {
+          orderId: order.orderId,
+          customerName: order.customerName,
+          phone: order.phone,
+          address: order.address,
+          deliveryArea: order.deliveryArea === "inside" ? "ঢাকার ভেতরে (৭০৳)" : "ঢাকার বাইরে (১৩০৳)",
+          deliveryFee: order.deliveryFee,
+          items: [...cart],
+          subtotal: order.subtotal,
+          total: order.total,
+          paymentMethod: order.paymentMethod,
+          date: order.dateString,
+        };
+
+        setPlacedOrder(newOrder);
+        setIsCheckoutOpen(false);
+        clearCart();
+        setIsSuccessOpen(true);
+      }
+    } catch (err: any) {
+      alert(err.message || "অর্ডার প্লেস করা সম্ভব হয়নি। দয়া করে পুনরায় চেষ্টা করুন।");
+    }
   };
 
   const closeSuccessModal = () => {
