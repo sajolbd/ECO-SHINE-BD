@@ -141,8 +141,22 @@ export const Hero: React.FC = () => {
         fetchHeroAndBanners();
     }, []);
 
-    const itemsToRender = banners.length > 0
-        ? banners.map((b) => ({
+    const itemsToRender = (() => {
+        if (banners.length === 0) {
+            return CAROUSEL_ITEMS.map((item) => ({
+                id: String(item.id),
+                title: item.title,
+                category: item.category,
+                rating: item.rating,
+                reviews: item.reviews,
+                image: item.image,
+                mobileImage: item.image,
+                url: "/#products",
+                badge: item.badge,
+            }));
+        }
+
+        const bannerItems = banners.map((b) => ({
             id: b._id,
             title: b.title || "",
             category: b.subtitle || "",
@@ -152,18 +166,27 @@ export const Hero: React.FC = () => {
             mobileImage: b.imageMobile,
             url: b.url || "/#products",
             badge: b.ctaText,
-          }))
-        : CAROUSEL_ITEMS.map((item) => ({
-            id: String(item.id),
-            title: item.title,
-            category: item.category,
-            rating: item.rating,
-            reviews: item.reviews,
-            image: item.image,
-            mobileImage: item.image,
-            url: "/#products",
-            badge: item.badge,
-          }));
+        }));
+
+        // If there are less than 5 items, pad them with items from CAROUSEL_ITEMS to ensure 3D carousel rendering
+        if (bannerItems.length < 5) {
+            const needed = 5 - bannerItems.length;
+            const fallbackItems = CAROUSEL_ITEMS.slice(0, needed).map((item) => ({
+                id: `fallback-${item.id}`,
+                title: item.title,
+                category: item.category,
+                rating: item.rating,
+                reviews: item.reviews,
+                image: item.image,
+                mobileImage: item.image,
+                url: "/#products",
+                badge: item.badge,
+            }));
+            return [...bannerItems, ...fallbackItems];
+        }
+
+        return bannerItems;
+    })();
 
     const totalItems = itemsToRender.length;
 
