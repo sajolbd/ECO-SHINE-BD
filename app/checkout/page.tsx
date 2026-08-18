@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -36,7 +36,28 @@ export default function CheckoutPage() {
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
 
-  const deliveryFee = deliveryArea === "inside" ? 70 : 130;
+  // Dynamic delivery charges from backend settings
+  const [deliveryChargeInside, setDeliveryChargeInside] = useState(70);
+  const [deliveryChargeOutside, setDeliveryChargeOutside] = useState(130);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const res = await fetch(`${apiUrl}/api/settings`);
+        const data = await res.json();
+        if (data.success && data.settings) {
+          setDeliveryChargeInside(data.settings.deliveryChargeInside ?? 70);
+          setDeliveryChargeOutside(data.settings.deliveryChargeOutside ?? 130);
+        }
+      } catch {
+        // Fallback to defaults if API unavailable
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const deliveryFee = deliveryArea === "inside" ? deliveryChargeInside : deliveryChargeOutside;
   const totalPrice = subtotal + deliveryFee;
 
   const validateForm = () => {
@@ -329,7 +350,7 @@ export default function CheckoutPage() {
                         <MapPin className="w-4 h-4 text-primary shrink-0" />
                         <span className="text-xs font-bold">ঢাকার ভেতরে</span>
                       </div>
-                      <span className="text-sm font-black text-primary">৭০৳</span>
+                      <span className="text-sm font-black text-primary">{deliveryChargeInside}৳</span>
                     </label>
 
                     <label
@@ -344,7 +365,7 @@ export default function CheckoutPage() {
                         <Truck className="w-4 h-4 text-primary shrink-0" />
                         <span className="text-xs font-bold">ঢাকার বাইরে</span>
                       </div>
-                      <span className="text-sm font-black text-primary">১৩০৳</span>
+                      <span className="text-sm font-black text-primary">{deliveryChargeOutside}৳</span>
                     </label>
                   </div>
                 </div>
