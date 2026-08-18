@@ -19,15 +19,24 @@ interface Category {
 }
 
 const STATIC_CATEGORIES: Category[] = [
-  { _id: "1", name: "অটো কেয়ার & কার ওয়াশ (Auto Care)", slug: "autocare", status: "active", displayOrder: 1 },
-  { _id: "2", name: "হোম & গ্রিজ ক্লিনার (Home Care)", slug: "homecare", status: "active", displayOrder: 2 },
+  { _id: "1", name: "Cleaning products", slug: "cleaning-products", status: "active", displayOrder: 1 },
+  { _id: "2", name: "Houseware", slug: "houseware", status: "active", displayOrder: 2 },
 ];
+
+// Build the correct href for each category
+function getCategoryHref(slug: string): string {
+  if (slug === "houseware" || slug === "homecare") return "/houseware";
+  return `/?category=${slug}#products`;
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const pathname = usePathname();
   const [categories, setCategories] = useState<Category[]>(STATIC_CATEGORIES);
+
+  // Detect if we are on the Houseware page → orange theme
+  const isHouseware = pathname === "/houseware";
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -48,15 +57,42 @@ export default function Navbar() {
   // If we are on the checkout page, do not render the main navbar
   if (pathname === "/checkout") return null;
 
+  // Theme tokens based on page
+  const primaryBg   = isHouseware ? "bg-orange-500" : "bg-primary";
+  const primaryText = isHouseware ? "text-orange-500" : "text-primary";
+  const primaryHoverBg = isHouseware ? "hover:bg-orange-600" : "hover:bg-emerald-600";
+  const primaryHoverText = isHouseware ? "hover:text-orange-500" : "hover:text-primary";
+  const dropdownHoverBg = isHouseware ? "hover:bg-orange-50" : "hover:bg-emerald-50";
+  const shadowColor = isHouseware
+    ? "shadow-md shadow-orange-500/10 hover:shadow-lg hover:shadow-orange-500/20"
+    : "shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20";
+
+  const logoSrc = isHouseware
+    ? "/images/logo-houseware.png"  // ← user will place their orange logo here
+    : "/images/logo.png";
+
+  const logoAlt = isHouseware ? "Eco Shine Houseware Bangladesh" : "Eco Shine Bangladesh";
+
+  // Gradient underline color for nav-link on houseware page
+  const navUnderlineStyle = isHouseware
+    ? { background: "linear-gradient(90deg, #f97316, #fb923c, #f97316)" }
+    : {};
+
   return (
     <>
-      <header className="sticky top-0 z-[9999] backdrop-blur-md bg-white/95 border-b border-slate-100 shadow-xs">
+      <header
+        className={`sticky top-0 z-[9999] backdrop-blur-md bg-white/95 border-b shadow-xs transition-colors duration-300 ${
+          isHouseware ? "border-orange-100" : "border-slate-100"
+        }`}
+      >
         {/* Top Bar */}
         <div className="flex h-[44px] overflow-hidden text-white text-xs lg:text-sm">
           {/* Left: welcome panel */}
           <div className="relative hidden lg:flex items-center pl-6 pr-12 bg-secondary shrink-0">
             <span className="font-semibold tracking-wide">
-              স্বাগতম ইকো সাইন বাংলাদেশে - পরিবেশবান্ধব ক্লিনিং সলিউশন
+              {isHouseware
+                ? "স্বাগতম Importer BD Houseware Collection-এ"
+                : "স্বাগতম ইকো সাইন বাংলাদেশে - পরিবেশবান্ধব ক্লিনিং সলিউশন"}
             </span>
             {/* angled right edge */}
             <span
@@ -66,7 +102,7 @@ export default function Navbar() {
           </div>
 
           {/* Right: contact panel */}
-          <div className="flex flex-1 items-center justify-end gap-0 bg-primary px-4 lg:px-6">
+          <div className={`flex flex-1 items-center justify-end gap-0 ${primaryBg} px-4 lg:px-6 transition-colors duration-300`}>
             <a
               href="tel:+8801958058359"
               className="flex items-center gap-1.5 px-4 hover:opacity-90 transition-opacity border-r border-white/20 h-full text-xs font-bold"
@@ -105,14 +141,14 @@ export default function Navbar() {
         <div className="bg-white border-t border-slate-100/60">
           <Container>
             <div className="relative flex h-20 items-center justify-between">
-              {/* Logo */}
-              <Link href="/" className="flex shrink-0 items-center z-1 p-1 ">
+              {/* Logo — switches based on page */}
+              <Link href="/" className="flex shrink-0 items-center z-1 p-1">
                 <Image
-                  src="/images/logo.png"
-                  alt="Eco Shine Bangladesh"
+                  src={logoSrc}
+                  alt={logoAlt}
                   width={180}
                   height={55}
-                  className="h-16 sm:h-24 w-auto object-contain"
+                  className="h-16 sm:h-24 w-auto object-contain transition-all duration-300"
                   priority
                 />
               </Link>
@@ -121,7 +157,9 @@ export default function Navbar() {
               <nav className="hidden lg:flex items-center gap-10">
                 <Link
                   href="/"
-                  className="nav-link font-extrabold text-sm text-slate-800 transition-colors py-2"
+                  className={`nav-link font-extrabold text-sm text-slate-800 transition-colors py-2 ${
+                    pathname === "/" ? primaryText : ""
+                  }`}
                 >
                   হোম
                 </Link>
@@ -130,7 +168,7 @@ export default function Navbar() {
                 <div className="group relative py-6">
                   <button
                     type="button"
-                    className="nav-link font-extrabold text-sm text-slate-800 flex items-center gap-1 cursor-pointer py-2 focus:outline-none"
+                    className={`nav-link font-extrabold text-sm text-slate-800 flex items-center gap-1 cursor-pointer py-2 focus:outline-none`}
                   >
                     <span>প্রোডাক্ট ক্যাটাগরি</span>
                     <ChevronDown
@@ -140,17 +178,36 @@ export default function Navbar() {
                   </button>
 
                   {/* Dropdown Box */}
-                  <div className="absolute top-[80%] left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border border-slate-100 p-2.5 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
+                  <div
+                    className={`absolute top-[80%] left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border p-2.5 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 ${
+                      isHouseware ? "border-orange-100" : "border-slate-100"
+                    }`}
+                  >
                     <div className="flex flex-col gap-1">
-                      {categories.map((cat) => (
-                        <Link
-                          key={cat.slug}
-                          href={`/?category=${cat.slug}#products`}
-                          className="rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-all duration-200"
-                        >
-                          {cat.name}
-                        </Link>
-                      ))}
+                      {categories.map((cat) => {
+                        const href = getCategoryHref(cat.slug);
+                        const isActive =
+                          cat.slug === "houseware"
+                            ? pathname === "/houseware"
+                            : pathname === "/" && false; // simplified
+                        return (
+                          <Link
+                            key={cat.slug}
+                            href={href}
+                            className={`rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 transition-all duration-200 ${
+                              cat.slug === "houseware" || cat.slug === "homecare"
+                                ? "hover:bg-orange-50 hover:text-orange-600"
+                                : "hover:bg-emerald-50 hover:text-primary"
+                            } ${
+                              (cat.slug === "houseware" && pathname === "/houseware")
+                                ? "bg-orange-50 text-orange-600"
+                                : ""
+                            }`}
+                          >
+                            {cat.name}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -160,7 +217,7 @@ export default function Navbar() {
                   href="https://wa.me/8801958058359"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-primary text-white hover:bg-emerald-600 px-5 py-2.5 text-xs sm:text-sm font-bold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20 active:scale-95 transition-all duration-200"
+                  className={`inline-flex items-center gap-2 rounded-xl ${primaryBg} text-white ${primaryHoverBg} px-5 py-2.5 text-xs sm:text-sm font-bold ${shadowColor} active:scale-95 transition-all duration-200`}
                 >
                   <span>অর্ডার হটলাইন</span>
                 </a>
@@ -169,7 +226,9 @@ export default function Navbar() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setOpen(true)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition lg:hidden z-10"
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border bg-slate-50 hover:bg-slate-100 text-slate-700 transition lg:hidden z-10 ${
+                  isHouseware ? "border-orange-200" : "border-slate-200"
+                }`}
               >
                 <Menu size={22} />
               </button>
@@ -197,8 +256,8 @@ export default function Navbar() {
                 className="flex items-center"
               >
                 <Image
-                  src="/images/logo.png"
-                  alt="Eco Shine Bangladesh"
+                  src={logoSrc}
+                  alt={logoAlt}
                   width={140}
                   height={45}
                   className="h-24 sm:h-36 w-auto object-contain"
@@ -206,7 +265,9 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => setOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-primary"
+                className={`flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition ${
+                  isHouseware ? "hover:bg-orange-100 hover:text-orange-500" : "hover:bg-slate-200 hover:text-primary"
+                }`}
               >
                 <X size={20} />
               </button>
@@ -216,7 +277,7 @@ export default function Navbar() {
             <div className="flex flex-col px-6 pt-4 gap-2">
               <Link
                 href="/"
-                className="flex items-center justify-between py-3.5 border-b border-slate-100 font-extrabold text-sm text-slate-800 hover:text-primary transition-colors"
+                className={`flex items-center justify-between py-3.5 border-b border-slate-100 font-extrabold text-sm text-slate-800 transition-colors ${primaryHoverText}`}
                 onClick={() => setOpen(false)}
               >
                 হোম
@@ -226,7 +287,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between py-3">
                   <button
                     type="button"
-                    className="font-extrabold text-sm text-slate-800 text-left flex-1 hover:text-primary transition-colors"
+                    className={`font-extrabold text-sm text-slate-800 text-left flex-1 transition-colors ${primaryHoverText}`}
                     onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
                   >
                     প্রোডাক্ট ক্যাটাগরি
@@ -252,8 +313,12 @@ export default function Navbar() {
                   {categories.map((cat) => (
                     <Link
                       key={cat.slug}
-                      href={`/?category=${cat.slug}#products`}
-                      className="py-2.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-primary transition-colors"
+                      href={getCategoryHref(cat.slug)}
+                      className={`py-2.5 text-xs sm:text-sm font-bold text-slate-600 transition-colors ${
+                        cat.slug === "houseware" || cat.slug === "homecare"
+                          ? "hover:text-orange-500"
+                          : "hover:text-primary"
+                      }`}
                       onClick={() => setOpen(false)}
                     >
                       {cat.name}

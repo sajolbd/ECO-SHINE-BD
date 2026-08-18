@@ -18,8 +18,8 @@ import {
 const quickLinks = [
   { label: "হোম পেজ", href: "/" },
   { label: "সকল প্রোডাক্টস", href: "/#products" },
-  { label: "অটো কেয়ার কালেকশন", href: "/#products" },
-  { label: "হোম & গ্রিজ ক্লিনার", href: "/#products" },
+  { label: "Cleaning products", href: "/#products" },
+  { label: "Houseware", href: "/houseware" },
   { label: "যোগাযোগ করুন", href: "tel:01958058359" },
 ];
 

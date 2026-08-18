@@ -44,8 +44,8 @@ export interface CategoryTab {
 }
 
 export const CATEGORIES: CategoryTab[] = [
-  { id: "autocare", name: "অটো কেয়ার & কার ওয়াশ (Auto Care)", iconName: "Car" },
-  { id: "homecare", name: "হোম & গ্রিজ ক্লিনার (Home Care)", iconName: "Home" },
+  { id: "cleaning-products", name: "Cleaning products", iconName: "Sparkles" },
+  { id: "houseware", name: "Houseware", iconName: "Home" },
 ];
 
 const DEFAULT_PHONE = "01958-058359";
@@ -56,8 +56,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-1",
     title: "বাবল বস কালার গার্ড ফোমিং জেল (৫৫০ মিলি)",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 350,
     originalPrice: 450,
     rating: 4.9,
@@ -76,8 +76,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-2",
     title: "প্রিমিয়াম কার & বাইক ওয়ালা ও ওয়াক্স (২৫০ গ্রাম)",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 450,
     originalPrice: 580,
     rating: 4.8,
@@ -96,8 +96,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-3",
     title: "বাবল বস কালার গার্ড ফোমিং জেল ৫ লিটার ক্যান",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 1680,
     originalPrice: 1950,
     rating: 4.9,
@@ -116,8 +116,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-4",
     title: "বাবল বস কালার গার্ড ফোমিং জেল (২৫০ মিলি)",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 250,
     originalPrice: 300,
     rating: 4.9,
@@ -136,8 +136,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-5",
     title: "ন্যানোটেক সাইন & পেইন্ট কোটিং কিট",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 750,
     originalPrice: 950,
     rating: 4.9,
@@ -156,8 +156,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-6",
     title: "ইকো সারফেস প্রটেকশন শাইন স্প্রে",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 380,
     originalPrice: 480,
     rating: 4.9,
@@ -176,8 +176,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-7",
     title: "বাবল বস আল্ট্রা ফোমিং ওয়াশ কম্বো প্যাক",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 890,
     originalPrice: 1100,
     rating: 4.8,
@@ -196,8 +196,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-8",
     title: "বাবল বস সুপার কালার সেভার ওয়াশ",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 320,
     originalPrice: 400,
     rating: 4.7,
@@ -215,8 +215,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-9",
     title: "কার & বাইক টায়ার সাইন ব্লাস্টার স্প্রে",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 420,
     originalPrice: 520,
     rating: 4.8,
@@ -234,8 +234,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-10",
     title: "ইকো সাইন ইন্টারিয়র ড্যাশবোর্ড শ্যাম্পু",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 290,
     originalPrice: 380,
     rating: 4.9,
@@ -253,8 +253,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-11",
     title: "বাবল বস হেডলাইট রিস্টোরার পলিশ",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 490,
     originalPrice: 650,
     rating: 4.8,
@@ -272,8 +272,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "auto-12",
     title: "ইকো সাইন বাইক কেরোসিন ফ্রি ক্লাসিক পলিশ",
-    category: "অটো কেয়ার & কার ওয়াশ",
-    categoryId: "autocare",
+    category: "Cleaning products",
+    categoryId: "cleaning-products",
     price: 360,
     originalPrice: 450,
     rating: 4.9,
@@ -293,8 +293,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-1",
     title: "ইকো সাইন কিচেন & টাইলস ক্লিনার (গ্রিজ কাটার)",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 299,
     originalPrice: 380,
     rating: 4.9,
@@ -313,8 +313,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-2",
     title: "ট্যাংক গার্ড অ্যাডভান্সড ওয়াটার ট্যাংক ক্লিনিং সলিউশন",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 550,
     originalPrice: 700,
     rating: 4.9,
@@ -333,8 +333,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-3",
     title: "ইকো সাইন বায়ো কিচেন গ্রিজ রিমুভার স্প্রে",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 380,
     originalPrice: 480,
     rating: 4.8,
@@ -353,8 +353,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-4",
     title: "ইকো সাইন ফ্লোর & টাইলস হাইজিন ক্লিনার",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 340,
     originalPrice: 420,
     rating: 4.9,
@@ -372,8 +372,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-5",
     title: "ইকো সাইন ক্রিস্টাল গ্লাস & মিরর শাইনার",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 280,
     originalPrice: 350,
     rating: 4.8,
@@ -392,8 +392,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-6",
     title: "ইকো সাইন উড & ফার্নিচার পলিশ স্প্রে",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 420,
     originalPrice: 520,
     rating: 4.9,
@@ -412,8 +412,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-7",
     title: "ইকো ওয়াটারপ্রুফিং & রুফ সিলান্ট সলিউশন",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 1250,
     originalPrice: 1500,
     rating: 4.8,
@@ -431,8 +431,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-8",
     title: "ওয়াশরুম টাইলস & মেটাল শাইন সলিউশন",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 310,
     originalPrice: 390,
     rating: 4.7,
@@ -450,8 +450,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-9",
     title: "কিচেন চিমনি & ওভেন হেভি ডিউটি ক্লিনার",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 460,
     originalPrice: 580,
     rating: 4.9,
@@ -469,8 +469,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-10",
     title: "হোম অ্যালুমিনিয়াম & গ্লাস ফ্রেমিং শাইনার",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 390,
     originalPrice: 480,
     rating: 4.8,
@@ -488,8 +488,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-11",
     title: "মাল্টি সারফেস অ্যান্টি-ব্যাকটেরিয়াল শাইন স্প্রে",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 350,
     originalPrice: 420,
     rating: 4.9,
@@ -507,8 +507,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     id: "home-12",
     title: "ইকো সানরাইজ সোলার প্যানেল ক্লিনার সলিউশন",
-    category: "হোম & গ্রিজ ক্লিনার",
-    categoryId: "homecare",
+    category: "Houseware",
+    categoryId: "houseware",
     price: 680,
     originalPrice: 850,
     rating: 4.9,
@@ -529,7 +529,7 @@ export function getProductById(id: string): Product | undefined {
   const rawProduct = PRODUCTS_DATA.find((p) => p.id === id);
   if (!rawProduct) return undefined;
 
-  const isAuto = rawProduct.categoryId === "autocare";
+  const isAuto = rawProduct.categoryId === "cleaning-products" || rawProduct.categoryId === "autocare";
 
   const defaultFeatures = isAuto
     ? [
