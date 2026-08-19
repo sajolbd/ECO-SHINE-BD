@@ -47,21 +47,21 @@ export const HousewareProductGrid: React.FC = () => {
   }
 
   return (
-    <section className="py-12 md:py-16 bg-orange-50/40 min-h-screen" id="houseware-products">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="pt-6 pb-12 md:pt-8 md:pb-16 bg-orange-50/40 min-h-screen scroll-mt-24" id="houseware-products">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 md:space-y-8">
 
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-700 text-xs sm:text-sm font-semibold tracking-wide border border-orange-200">
+        <div className="text-center max-w-3xl mx-auto space-y-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 text-xs sm:text-sm font-semibold tracking-wide border border-orange-200">
             <Home className="w-4 h-4" />
             <span>Importer BD – Houseware Collection</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             আমাদের প্রিমিয়াম{" "}
             <span className="text-orange-500">Houseware</span>{" "}
             প্রোডাক্ট সমূহ
           </h1>
-          <p className="text-sm sm:text-base text-slate-600">
+          <p className="text-xs sm:text-sm text-slate-600">
             আপনার ঘরের প্রতিটি কোণকে আরও সুন্দর ও পরিচ্ছন্ন রাখতে <strong>Importers BD</strong>-এর হাউসওয়্যার কালেকশন থেকে বেছে নিন সেরা পণ্যটি।
           </p>
         </div>

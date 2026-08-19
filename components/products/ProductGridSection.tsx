@@ -54,19 +54,19 @@ export const ProductGridSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-12 md:py-16 bg-slate-50/60" id="products">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+    <section className="pt-6 pb-12 md:pt-8 md:pb-16 bg-slate-50/60 scroll-mt-24" id="products">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 md:space-y-8">
 
         {/* Top Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-semibold tracking-wide border border-primary/20">
+        <div className="text-center max-w-3xl mx-auto space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-semibold tracking-wide border border-primary/20">
             <Sparkles className="w-4 h-4 text-primary" />
             <span>ইকো সাইন বাংলাদেশ - ১০০% অরজিনাল প্রোডাক্টস</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             আমাদের জনপ্রিয় প্রিমিয়াম ক্যাটাগরি প্রোডাক্টস
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 font-normal">
+          <p className="text-xs sm:text-sm text-slate-600 font-normal">
             আপনার গাড়ি ও বাসার যাবতীয় ক্লিনিং ও সারফেস প্রটেকশনের জন্য সেরা মানসম্মত সলিউশন বেছে নিন।
           </p>
         </div>
@@ -82,8 +82,8 @@ export const ProductGridSection: React.FC = () => {
           if (categoryProducts.length === 0) return null;
 
           return (
-            <div key={cat.slug} className={`space-y-6 ${idx > 0 ? "pt-10" : ""}`}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div key={cat.slug} className={`space-y-4 ${idx > 0 ? "pt-6 border-t border-slate-200/80" : ""}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
                 <div className="flex items-center gap-3">
                   <div className={`p-3 rounded-xl ${
                     cat.slug === "cleaning-products" || cat.slug === "autocare"
