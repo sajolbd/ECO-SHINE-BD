@@ -189,10 +189,10 @@ export const CheckoutModal: React.FC = () => {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="যেমন: রহিম আহমেদ"
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 ${
+                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
                         errors.name
                           ? "border-red-500 focus:ring-red-200"
-                          : "border-slate-300 focus:border-primary focus:ring-primary/20"
+                          : "border-slate-700 focus:border-primary focus:ring-primary/20"
                       }`}
                     />
                   </div>
@@ -212,10 +212,10 @@ export const CheckoutModal: React.FC = () => {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="যেমন: 01712345678"
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 ${
+                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
                         errors.phone
                           ? "border-red-500 focus:ring-red-200"
-                          : "border-slate-300 focus:border-primary focus:ring-primary/20"
+                          : "border-slate-700 focus:border-primary focus:ring-primary/20"
                       }`}
                     />
                   </div>
@@ -234,10 +234,10 @@ export const CheckoutModal: React.FC = () => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="যেমন: বাসা #১২, রোড #০৫, ব্লক-বি, মিরপুর, ঢাকা"
-                    className={`w-full px-4 py-2 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 ${
+                    className={`w-full px-4 py-2 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
                       errors.address
                         ? "border-red-500 focus:ring-red-200"
-                        : "border-slate-300 focus:border-primary focus:ring-primary/20"
+                        : "border-slate-700 focus:border-primary focus:ring-primary/20"
                     }`}
                   />
                   {errors.address && (
