@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   FaFacebookF,
   FaInstagram,
@@ -60,14 +61,26 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isHouseware = pathname?.startsWith("/houseware");
+
+  const housewareQuickLinks = [
+    { label: "Houseware হোম পেজ", href: "/houseware" },
+    { label: "সকল Houseware প্রোডাক্টস", href: "/houseware#houseware-products" },
+    { label: "যোগাযোগ করুন", href: "tel:01958058359" },
+  ];
+
+  const linksToDisplay = isHouseware ? housewareQuickLinks : quickLinks;
+  const brandTitle = isHouseware ? "Importer BD Houseware Collection" : "Eco Shine Bangladesh (ইকো সাইন বাংলাদেশ)";
+
   return (
-    <footer className="bg-slate-900 text-slate-200 pt-12 border-t-4 border-primary">
+    <footer className={`bg-slate-900 text-slate-200 pt-12 border-t-4 ${isHouseware ? "border-orange-500" : "border-primary"}`}>
 
       {/* 1. Value Proposition Features Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 border-b border-slate-800">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/60 border border-slate-700/50">
-            <div className="p-3 rounded-xl bg-primary/20 text-primary shrink-0">
+            <div className={`p-3 rounded-xl shrink-0 ${isHouseware ? "bg-orange-500/20 text-orange-400" : "bg-primary/20 text-primary"}`}>
               <FaAward size={24} />
             </div>
             <div>
@@ -77,7 +90,7 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/60 border border-slate-700/50">
-            <div className="p-3 rounded-xl bg-primary/20 text-primary shrink-0">
+            <div className={`p-3 rounded-xl shrink-0 ${isHouseware ? "bg-orange-500/20 text-orange-400" : "bg-primary/20 text-primary"}`}>
               <FaTruck size={24} />
             </div>
             <div>
@@ -87,7 +100,7 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/60 border border-slate-700/50">
-            <div className="p-3 rounded-xl bg-primary/20 text-primary shrink-0">
+            <div className={`p-3 rounded-xl shrink-0 ${isHouseware ? "bg-orange-500/20 text-orange-400" : "bg-primary/20 text-primary"}`}>
               <FaShieldAlt size={24} />
             </div>
             <div>
@@ -104,17 +117,19 @@ export default function Footer() {
 
           {/* Column 1: Brand Info */}
           <div className="space-y-4">
-            <div className="  inline-block ">
+            <div className="inline-block">
               <Image
-                src="/images/logo.png"
-                alt="Eco Shine Bangladesh"
+                src={isHouseware ? "/images/logo-houseware.png" : "/images/logo.png"}
+                alt={brandTitle}
                 width={180}
                 height={50}
                 className="h-24 md:h-36 w-auto object-contain"
               />
             </div>
             <p className="text-sm text-slate-300 leading-relaxed font-normal">
-              ইকো সাইন বাংলাদেশ (Eco Shine Bangladesh) - আপনার প্রিয় গাড়ি ও বাসাবাড়ির জন্য ১০০% কার্যকরী, সুরক্ষিত ও পরিবেশ বান্ধব ক্লিনিং ও সারফেস প্রটেকশন সলিউশন।
+              {isHouseware
+                ? "Importer BD Houseware Collection - আপনার প্রিয় বাসাবাড়ির জন্য ১০০% কার্যকরী, উন্নতমানের টেকসই ও চমৎকার ডিজাইন সম্বলিত প্রিমিয়াম হাউসওয়্যার পণ্যসমাহার।"
+                : "ইকো সাইন বাংলাদেশ (Eco Shine Bangladesh) - আপনার প্রিয় গাড়ি ও বাসাবাড়ির জন্য ১০০% কার্যকরী, সুরক্ষিত ও পরিবেশ বান্ধব ক্লিনিং ও সারফেস প্রটেকশন সলিউশন।"}
             </p>
 
             {/* Social Icons */}
@@ -141,17 +156,17 @@ export default function Footer() {
 
           {/* Column 2: Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white border-b-2 border-primary/40 pb-2 inline-block">
+            <h3 className={`text-lg font-bold text-white border-b-2 pb-2 inline-block ${isHouseware ? "border-orange-500/40" : "border-primary/40"}`}>
               গুরুত্বপূর্ণ লিংকসমূহ
             </h3>
             <ul className="space-y-2.5 text-sm">
-              {quickLinks.map((link, idx) => (
+              {linksToDisplay.map((link, idx) => (
                 <li key={idx}>
                   <Link
                     href={link.href}
-                    className="text-slate-300 hover:text-primary transition-colors duration-200 flex items-center gap-2"
+                    className={`text-slate-300 transition-colors duration-200 flex items-center gap-2 ${isHouseware ? "hover:text-orange-400" : "hover:text-primary"}`}
                   >
-                    <span className="text-primary text-xs">›</span>
+                    <span className={`text-xs ${isHouseware ? "text-orange-400" : "text-primary"}`}>›</span>
                     <span>{link.label}</span>
                   </Link>
                 </li>
@@ -248,7 +263,7 @@ export default function Footer() {
       <div className="bg-slate-950 py-5 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center text-xs text-slate-400">
           <p className="font-medium">
-            &copy; {new Date().getFullYear()} <span className="text-white font-bold">Eco Shine Bangladesh</span> (ইকো সাইন বাংলাদেশ)। সর্বস্বত্ব সংরক্ষিত।
+            &copy; {new Date().getFullYear()} <span className="text-white font-bold">{brandTitle}</span>। সর্বস্বত্ব সংরক্ষিত।
           </p>
           <div className="flex items-center gap-4 text-slate-400">
             <span>ক্যাশ অন ডেলিভারি সুবিধা সম্বলিত</span>

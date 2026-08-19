@@ -35,8 +35,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [categories, setCategories] = useState<Category[]>(STATIC_CATEGORIES);
 
-  // Detect if we are on the Houseware page → orange theme
-  const isHouseware = pathname === "/houseware";
+  // Detect if we are on the Houseware page or houseware product detail page → orange theme
+  const isHouseware = pathname.startsWith("/houseware");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -142,7 +142,7 @@ export default function Navbar() {
           <Container>
             <div className="relative flex h-20 items-center justify-between">
               {/* Logo — switches based on page */}
-              <Link href="/" className="flex shrink-0 items-center z-1 p-1">
+              <Link href={isHouseware ? "/houseware" : "/"} className="flex shrink-0 items-center z-1 p-1">
                 <Image
                   src={logoSrc}
                   alt={logoAlt}
@@ -156,9 +156,9 @@ export default function Navbar() {
               {/* Desktop Menu */}
               <nav className="hidden lg:flex items-center gap-10">
                 <Link
-                  href="/"
+                  href={isHouseware ? "/houseware" : "/"}
                   className={`nav-link font-extrabold text-sm text-slate-800 transition-colors py-2 ${
-                    pathname === "/" ? primaryText : ""
+                    (isHouseware ? pathname === "/houseware" : pathname === "/") ? primaryText : ""
                   }`}
                 >
                   হোম
@@ -251,7 +251,7 @@ export default function Navbar() {
             {/* Drawer Header */}
             <div className="flex h-20 items-center justify-between border-b border-slate-100 px-6 bg-slate-50/80">
               <Link
-                href="/"
+                href={isHouseware ? "/houseware" : "/"}
                 onClick={() => setOpen(false)}
                 className="flex items-center"
               >
@@ -276,7 +276,7 @@ export default function Navbar() {
             {/* Nav Links */}
             <div className="flex flex-col px-6 pt-4 gap-2">
               <Link
-                href="/"
+                href={isHouseware ? "/houseware" : "/"}
                 className={`flex items-center justify-between py-3.5 border-b border-slate-100 font-extrabold text-sm text-slate-800 transition-colors ${primaryHoverText}`}
                 onClick={() => setOpen(false)}
               >
