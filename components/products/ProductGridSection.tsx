@@ -113,8 +113,8 @@ export const ProductGridSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2-Column Horizontal Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {/* 4-Column Grid for Desktop, 2-Column for Mobile */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                 {categoryProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

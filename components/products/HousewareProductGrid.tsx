@@ -92,7 +92,7 @@ export const HousewareProductGrid: React.FC = () => {
             <p className="text-slate-500 font-semibold">কোনো পণ্য পাওয়া যায়নি।</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {products.map((product) => (
               <HousewareProductCard key={product.id} product={product} />
             ))}
