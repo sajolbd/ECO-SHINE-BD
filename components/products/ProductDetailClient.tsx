@@ -114,6 +114,22 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
     fetchRelated();
   }, [product]);
 
+  // Auto-open checkout if URL contains ?order=true or ?buy=true or #order
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (
+        params.get("order") === "true" ||
+        params.get("checkout") === "true" ||
+        params.get("buy") === "true" ||
+        window.location.hash === "#order"
+      ) {
+        addToCart(product, 1);
+        openCheckout();
+      }
+    }
+  }, [product, addToCart, openCheckout]);
+
   // Calculate discount percent
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
