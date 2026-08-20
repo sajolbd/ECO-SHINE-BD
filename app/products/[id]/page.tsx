@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${product.title} - মূল্য ${product.price}৳ | Eco Shine Bangladesh`,
-    description: `${product.description} - মূল্য: ${product.price}৳। অর্ডার করতে লিংকে ক্লিক করুন।`,
+    description: `🛒 ${product.title} - অফার মূল্য: ${product.price}৳। ${product.description}। ক্যাশ অন ডেলিভারিতে এখনই অর্ডার করুন!`,
     keywords: [
       product.title,
       product.category,
@@ -63,15 +63,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       "ক্যাশ অন ডেলিভারি",
     ],
     openGraph: {
-      title: `${product.title} - মূল্য: ${product.price}৳`,
-      description: product.description,
+      title: `🛒 ${product.title} - মূল্য: ${product.price}৳`,
+      description: `🔥 অফার মূল্য: ${product.price}৳ (পূর্বের মূল্য: ${product.originalPrice || product.price + 100}৳)। ক্যাশ অন ডেলিভারিতে অর্ডার করতে লিংকে চাপুন!`,
       url: productUrl,
       siteName: "Eco Shine Bangladesh",
       images: [
         {
           url: ogImage,
+          secureUrl: ogImage,
           width: 1200,
           height: 630,
+          type: "image/jpeg",
           alt: product.title,
         },
       ],
@@ -79,9 +81,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: product.title,
+      title: `${product.title} - মূল্য: ${product.price}৳`,
       description: product.description,
       images: [ogImage],
+    },
+    other: {
+      "product:price:amount": product.price.toString(),
+      "product:price:currency": "BDT",
+      "og:price:amount": product.price.toString(),
+      "og:price:currency": "BDT",
     },
   };
 }
@@ -101,8 +109,35 @@ export default async function ProductDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const siteUrl = "https://eco-shine-bd.vercel.app";
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.title,
+    "image": product.images?.[0] ? [product.images[0].startsWith("http") ? product.images[0] : `${siteUrl}${product.images[0]}`] : [],
+    "description": product.description,
+    "sku": product.id,
+    "offers": {
+      "@type": "Offer",
+      "url": `${siteUrl}/products/${product.id}`,
+      "priceCurrency": "BDT",
+      "price": product.price,
+      "priceValidUntil": "2027-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "Eco Shine Bangladesh"
+      }
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 flex flex-col justify-between">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div>
         <ProductDetailClient product={product} />
       </div>
