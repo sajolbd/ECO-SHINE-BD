@@ -40,15 +40,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const siteUrl = "https://eco-shine-bd.vercel.app";
   const productUrl = `${siteUrl}/houseware/products/${product.id}`;
-  const ogImage = product.images[0]
-    ? product.images[0].startsWith("http")
-      ? product.images[0]
-      : `${siteUrl}${product.images[0]}`
-    : `${siteUrl}/og-image.jpg`;
+
+  let rawImg = product.images?.[0] || "";
+  let ogImage = `${siteUrl}/images/products/product-2.jpeg`;
+
+  if (rawImg && !rawImg.includes("localhost") && !rawImg.includes("127.0.0.1")) {
+    if (rawImg.startsWith("http")) {
+      ogImage = rawImg;
+    } else {
+      ogImage = `${siteUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+    }
+  }
 
   return {
     title: `${product.title} - Importer BD Houseware | মূল্য ${product.price}৳`,
-    description: product.description,
+    description: `${product.description} - মূল্য: ${product.price}৳। এখনই সরাসরি অর্ডার করুন।`,
     keywords: [
       product.title,
       product.category,
@@ -57,15 +63,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       "ক্যাশ অন ডেলিভারি",
     ],
     openGraph: {
-      title: `${product.title} | Importer BD Houseware Collection`,
+      title: `${product.title} - মূল্য: ${product.price}৳ | Importer BD`,
       description: product.description,
       url: productUrl,
       siteName: "Importer BD Houseware Collection",
       images: [
         {
           url: ogImage,
-          width: 800,
-          height: 800,
+          width: 1200,
+          height: 630,
           alt: product.title,
         },
       ],
