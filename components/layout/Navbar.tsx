@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import Container from "components/shared/Container";
 import Image from "next/image";
 import { API_BASE } from "../../lib/api";
+import AnnouncementBar from "./AnnouncementBar";
 
 interface Category {
   _id: string;
@@ -85,6 +86,9 @@ export default function Navbar() {
           isHouseware ? "border-orange-100" : "border-slate-100"
         }`}
       >
+        {/* Top Announcement Bar (scrolling LTR text) */}
+        <AnnouncementBar isHouseware={isHouseware} />
+
         {/* Top Bar */}
         <div className="flex h-[44px] overflow-hidden text-white text-xs lg:text-sm">
           {/* Left: welcome panel */}

@@ -114,7 +114,7 @@ export const Hero: React.FC = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
             // 1. Fetch homepage text
             try {
-                const response = await fetch(`${apiUrl}/api/homepage`);
+                const response = await fetch(`${apiUrl}/api/homepage`, { cache: "no-store" });
                 const data = await response.json();
                 if (data.success && data.homepage) {
                     if (data.homepage.heroBadge) setHeroBadge(data.homepage.heroBadge);
