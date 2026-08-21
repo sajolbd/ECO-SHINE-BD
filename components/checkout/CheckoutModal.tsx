@@ -41,6 +41,10 @@ export const CheckoutModal: React.FC = () => {
       newErrors.phone = "সঠিক ১১ ডিজিটের মোবাইল নম্বর প্রদান করুন (যেমন: 01712345678)";
     }
 
+    if (!address.trim()) {
+      newErrors.address = "অনুগ্রহ করে আপনার সম্পূর্ণ ডেলিভারি ঠিকানা লিখুন";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -227,7 +231,7 @@ export const CheckoutModal: React.FC = () => {
                 {/* Address Input */}
                 <div>
                   <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
-                    সম্পূর্ণ ডেলিভারি ঠিকানা <span className="text-slate-400 font-normal text-xs">(ঐচ্ছিক)</span>
+                    সম্পূর্ণ ডেলিভারি ঠিকানা <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     rows={2}

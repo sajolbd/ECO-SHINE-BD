@@ -34,10 +34,10 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [deliveryArea, setDeliveryArea] = useState<"inside" | "outside">("inside");
   const [note, setNote] = useState("");
-  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
 
   // Dynamic delivery charges from backend settings
-  const [deliveryChargeInside, setDeliveryChargeInside] = useState(70);
+  const [deliveryChargeInside, setDeliveryChargeInside] = useState(80);
   const [deliveryChargeOutside, setDeliveryChargeOutside] = useState(130);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function CheckoutPage() {
   const totalPrice = subtotal + deliveryFee;
 
   const validateForm = () => {
-    const newErrors: { name?: string; phone?: string } = {};
+    const newErrors: { name?: string; phone?: string; address?: string } = {};
 
     if (!customerName.trim()) {
       newErrors.name = "অনুগ্রহ করে আপনার নাম লিখুন";
@@ -73,7 +73,9 @@ export default function CheckoutPage() {
       newErrors.phone = "সঠিক ১১ ডিজিটের মোবাইল নম্বর প্রদান করুন (যেমন: 01712345678)";
     }
 
-    // Address is optional! (not required)
+    if (!address.trim()) {
+      newErrors.address = "অনুগ্রহ করে আপনার সম্পূর্ণ ডেলিভারি ঠিকানা লিখুন";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -94,7 +96,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
-      
+
       {/* Top Navigation Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
@@ -120,7 +122,7 @@ export default function CheckoutPage() {
 
       {/* Main Checkout Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
-        
+
         {/* Page Title & Breadcrumb */}
         <div className="space-y-2 border-b border-slate-200 pb-4">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
@@ -164,7 +166,7 @@ export default function CheckoutPage() {
         ) : (
           /* Non-Empty Cart 2-Column Layout */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Left Column: Cart Items List (7 cols) */}
             <div className="lg:col-span-7 bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-sm space-y-6">
               <div className="flex items-center justify-between border-b border-slate-200 pb-4">
@@ -263,7 +265,7 @@ export default function CheckoutPage() {
 
             {/* Right Column: Customer Form & Checkout Submit (5 cols) */}
             <div className="lg:col-span-5 bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-sm space-y-6">
-              
+
               <div className="border-b border-slate-200 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2.5">
                   <User className="w-5 h-5 text-primary" />
@@ -275,7 +277,7 @@ export default function CheckoutPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                
+
                 {/* Name Input */}
                 <div>
                   <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
@@ -286,11 +288,10 @@ export default function CheckoutPage() {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="যেমন: রহিম আহমেদ"
-                    className={`w-full px-4 py-3 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
-                      errors.name
+                    className={`w-full px-4 py-3 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${errors.name
                         ? "border-red-500 focus:ring-red-200"
                         : "border-slate-700 focus:border-primary focus:ring-primary/20"
-                    }`}
+                      }`}
                   />
                   {errors.name && (
                     <p className="text-xs text-red-500 font-semibold mt-1">{errors.name}</p>
@@ -307,29 +308,34 @@ export default function CheckoutPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="যেমন: 01712345678"
-                    className={`w-full px-4 py-3 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
-                      errors.phone
+                    className={`w-full px-4 py-3 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${errors.phone
                         ? "border-red-500 focus:ring-red-200"
                         : "border-slate-700 focus:border-primary focus:ring-primary/20"
-                    }`}
+                      }`}
                   />
                   {errors.phone && (
                     <p className="text-xs text-red-500 font-semibold mt-1">{errors.phone}</p>
                   )}
                 </div>
 
-                {/* Address Input (OPTIONAL - NO RED ASTERISK) */}
+                {/* Address Input */}
                 <div>
                   <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
-                    সম্পূর্ণ ডেলিভারি ঠিকানা <span className="text-slate-400 font-normal text-xs">(ঐচ্ছিক)</span>
+                    সম্পূর্ণ ডেলিভারি ঠিকানা <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     rows={2}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="যেমন: বাসা #১২, রোড #০৫, ব্লক-বি, মিরপুর, ঢাকা"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm font-medium focus:outline-none bg-[#1e293b] text-white placeholder-slate-400"
+                    className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${errors.address
+                        ? "border-red-500 focus:ring-red-200"
+                        : "border-slate-700 focus:border-primary focus:ring-primary/20"
+                      }`}
                   />
+                  {errors.address && (
+                    <p className="text-xs text-red-500 font-semibold mt-1">{errors.address}</p>
+                  )}
                 </div>
 
                 {/* Delivery Area Selection */}
@@ -340,11 +346,10 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <label
                       onClick={() => setDeliveryArea("inside")}
-                      className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col justify-between transition-all ${
-                        deliveryArea === "inside"
+                      className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col justify-between transition-all ${deliveryArea === "inside"
                           ? "border-primary bg-primary/5 text-primary font-bold shadow-2xs"
                           : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-1.5 mb-1">
                         <MapPin className="w-4 h-4 text-primary shrink-0" />
@@ -355,11 +360,10 @@ export default function CheckoutPage() {
 
                     <label
                       onClick={() => setDeliveryArea("outside")}
-                      className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col justify-between transition-all ${
-                        deliveryArea === "outside"
+                      className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col justify-between transition-all ${deliveryArea === "outside"
                           ? "border-primary bg-primary/5 text-primary font-bold shadow-2xs"
                           : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-1.5 mb-1">
                         <Truck className="w-4 h-4 text-primary shrink-0" />
