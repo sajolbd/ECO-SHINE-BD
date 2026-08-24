@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, Mail, X, ChevronDown } from "lucide-react";
+import { Menu, Phone, Mail, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import Container from "components/shared/Container";
 import Image from "next/image";
@@ -32,7 +32,6 @@ function getCategoryHref(slug: string): string {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const pathname = usePathname();
   const [categories, setCategories] = useState<Category[]>(STATIC_CATEGORIES);
 
@@ -59,7 +58,7 @@ export default function Navbar() {
   if (pathname === "/checkout") return null;
 
   // Theme tokens based on page
-  const primaryBg   = isHouseware ? "bg-orange-500" : "bg-primary";
+  const primaryBg = isHouseware ? "bg-orange-500" : "bg-primary";
   const primaryText = isHouseware ? "text-orange-500" : "text-primary";
   const primaryHoverBg = isHouseware ? "hover:bg-orange-600" : "hover:bg-emerald-600";
   const primaryHoverText = isHouseware ? "hover:text-orange-500" : "hover:text-primary";
@@ -82,9 +81,8 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`sticky top-0 z-[9999] backdrop-blur-md bg-white/95 border-b shadow-xs transition-colors duration-300 ${
-          isHouseware ? "border-orange-100" : "border-slate-100"
-        }`}
+        className={`sticky top-0 z-[9999] backdrop-blur-md bg-white/95 border-b shadow-xs transition-colors duration-300 ${isHouseware ? "border-orange-100" : "border-slate-100"
+          }`}
       >
         {/* Top Announcement Bar (scrolling LTR text) */}
         <AnnouncementBar isHouseware={isHouseware} />
@@ -158,63 +156,36 @@ export default function Navbar() {
               </Link>
 
               {/* Desktop Menu */}
-              <nav className="hidden lg:flex items-center gap-10">
+              <nav className="hidden lg:flex items-center gap-8">
                 <Link
                   href={isHouseware ? "/houseware" : "/"}
-                  className={`nav-link font-extrabold text-sm text-slate-800 transition-colors py-2 ${
-                    (isHouseware ? pathname === "/houseware" : pathname === "/") ? primaryText : ""
-                  }`}
+                  className={`nav-link font-extrabold text-sm text-slate-800 transition-colors py-2 ${(isHouseware ? pathname === "/houseware" : pathname === "/") ? primaryText : ""
+                    }`}
                 >
-                  হোম
+                  Home
                 </Link>
 
-                {/* Category Dropdown */}
-                <div className="group relative py-6">
-                  <button
-                    type="button"
-                    className={`nav-link font-extrabold text-sm text-slate-800 flex items-center gap-1 cursor-pointer py-2 focus:outline-none`}
-                  >
-                    <span>প্রোডাক্ট ক্যাটাগরি</span>
-                    <ChevronDown
-                      size={15}
-                      className="transition-transform duration-300 group-hover:rotate-180 text-slate-500"
-                    />
-                  </button>
+                {categories.map((cat) => {
+                  const href = getCategoryHref(cat.slug);
+                  const isActive =
+                    cat.slug === "houseware"
+                      ? pathname.startsWith("/houseware")
+                      : pathname === "/" && !isHouseware;
 
-                  {/* Dropdown Box */}
-                  <div
-                    className={`absolute top-[80%] left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border p-2.5 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 ${
-                      isHouseware ? "border-orange-100" : "border-slate-100"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-1">
-                      {categories.map((cat) => {
-                        const href = getCategoryHref(cat.slug);
-                        const isActive =
-                          cat.slug === "houseware"
-                            ? pathname === "/houseware"
-                            : pathname === "/" && false; // simplified
-                        return (
-                          <Link
-                            key={cat.slug}
-                            href={href}
-                            className={`rounded-xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-700 transition-all duration-200 ${
-                              cat.slug === "houseware" || cat.slug === "homecare"
-                                ? "hover:bg-orange-50 hover:text-orange-600"
-                                : "hover:bg-emerald-50 hover:text-primary"
-                            } ${
-                              (cat.slug === "houseware" && pathname === "/houseware")
-                                ? "bg-orange-50 text-orange-600"
-                                : ""
-                            }`}
-                          >
-                            {cat.name}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
+                  return (
+                    <Link
+                      key={cat.slug}
+                      href={href}
+                      className={`nav-link font-extrabold text-sm text-slate-800 transition-colors py-2 ${(cat.slug === "houseware" && isHouseware) ? "text-orange-500 font-black" : ""
+                        } ${cat.slug === "houseware" || cat.slug === "homecare"
+                          ? "hover:text-orange-500"
+                          : primaryHoverText
+                        }`}
+                    >
+                      {cat.name}
+                    </Link>
+                  );
+                })}
 
                 {/* Right Button */}
                 <a
@@ -230,9 +201,8 @@ export default function Navbar() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setOpen(true)}
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border bg-slate-50 hover:bg-slate-100 text-slate-700 transition lg:hidden z-10 ${
-                  isHouseware ? "border-orange-200" : "border-slate-200"
-                }`}
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border bg-slate-50 hover:bg-slate-100 text-slate-700 transition lg:hidden z-10 ${isHouseware ? "border-orange-200" : "border-slate-200"
+                  }`}
               >
                 <Menu size={22} />
               </button>
@@ -269,67 +239,36 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => setOpen(false)}
-                className={`flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition ${
-                  isHouseware ? "hover:bg-orange-100 hover:text-orange-500" : "hover:bg-slate-200 hover:text-primary"
-                }`}
+                className={`flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition ${isHouseware ? "hover:bg-orange-100 hover:text-orange-500" : "hover:bg-slate-200 hover:text-primary"
+                  }`}
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Nav Links */}
-            <div className="flex flex-col px-6 pt-4 gap-2">
+            <div className="flex flex-col px-6 pt-4 gap-1">
               <Link
                 href={isHouseware ? "/houseware" : "/"}
                 className={`flex items-center justify-between py-3.5 border-b border-slate-100 font-extrabold text-sm text-slate-800 transition-colors ${primaryHoverText}`}
                 onClick={() => setOpen(false)}
               >
-                হোম
+                Home
               </Link>
 
-              <div className="border-b border-slate-100 py-1">
-                <div className="flex items-center justify-between py-3">
-                  <button
-                    type="button"
-                    className={`font-extrabold text-sm text-slate-800 text-left flex-1 transition-colors ${primaryHoverText}`}
-                    onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
-                  >
-                    প্রোডাক্ট ক্যাটাগরি
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-500"
-                  >
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-300 ${mobileCategoriesOpen ? "rotate-180" : ""
-                        }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Submenu */}
-                <div
-                  className={`overflow-hidden transition-all duration-300 flex flex-col pl-4 gap-0.5 ${mobileCategoriesOpen ? "max-h-[300px] pb-3" : "max-h-0"
+              {categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={getCategoryHref(cat.slug)}
+                  className={`flex items-center justify-between py-3.5 border-b border-slate-100 font-extrabold text-sm text-slate-800 transition-colors ${cat.slug === "houseware" || cat.slug === "homecare"
+                    ? "hover:text-orange-500"
+                    : primaryHoverText
                     }`}
+                  onClick={() => setOpen(false)}
                 >
-                  {categories.map((cat) => (
-                    <Link
-                      key={cat.slug}
-                      href={getCategoryHref(cat.slug)}
-                      className={`py-2.5 text-xs sm:text-sm font-bold text-slate-600 transition-colors ${
-                        cat.slug === "houseware" || cat.slug === "homecare"
-                          ? "hover:text-orange-500"
-                          : "hover:text-primary"
-                      }`}
-                      onClick={() => setOpen(false)}
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+                  {cat.name}
+                </Link>
+              ))}
             </div>
           </div>
 
