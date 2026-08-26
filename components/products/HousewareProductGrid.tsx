@@ -24,13 +24,18 @@ export const HousewareProductGrid: React.FC = () => {
         clearTimeout(timeoutId);
         const data = await response.json();
         if (data.success && data.products && data.products.length > 0) {
-          const housewareProducts = data.products.filter(
+          const activeApiProducts = data.products.filter(
             (p: Product) =>
-              p.categoryId === "houseware" || p.categoryId === "homecare"
+              (p.categoryId === "houseware" || p.categoryId === "homecare") &&
+              p.status !== "inactive"
           );
-          if (housewareProducts.length > 0) {
-            setProducts(housewareProducts);
-          }
+
+          const apiIds = new Set(activeApiProducts.map((p: Product) => p.id));
+          const remainingStatic = initialHousewareProducts.filter(
+            (sp) => !apiIds.has(sp.id)
+          );
+
+          setProducts([...activeApiProducts, ...remainingStatic]);
         }
       } catch (err) {
         // Silently keep using static products fallback on timeout or error

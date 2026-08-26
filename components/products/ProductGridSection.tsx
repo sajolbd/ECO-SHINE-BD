@@ -44,7 +44,16 @@ export const ProductGridSection: React.FC = () => {
         const response = await fetch(`${apiUrl}/api/products?limit=100`);
         const data = await response.json();
         if (data.success && data.products && data.products.length > 0) {
-          setProducts(data.products);
+          const activeApiProducts = data.products.filter(
+            (p: Product) => p.status !== "inactive"
+          );
+
+          const apiIds = new Set(activeApiProducts.map((p: Product) => p.id));
+          const remainingStatic = PRODUCTS_DATA.filter(
+            (sp) => !apiIds.has(sp.id)
+          );
+
+          setProducts([...activeApiProducts, ...remainingStatic]);
         }
       } catch (err) {
         console.log("Failed to load products from API backend, using static database:", err);

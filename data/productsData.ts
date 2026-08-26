@@ -35,6 +35,7 @@ export interface Product {
   faqs?: ProductFaqItem[];
   inStock?: boolean;
   stockCount?: number;
+  status?: "active" | "inactive";
 }
 
 export interface CategoryTab {
