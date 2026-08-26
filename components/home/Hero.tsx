@@ -111,7 +111,7 @@ export const Hero: React.FC = () => {
 
     useEffect(() => {
         const fetchHeroAndBanners = async () => {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
             // 1. Fetch homepage text
             try {
                 const response = await fetch(`${apiUrl}/api/homepage`, { cache: "no-store" });

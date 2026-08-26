@@ -13,7 +13,7 @@ export const HousewareProductGrid: React.FC = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
 

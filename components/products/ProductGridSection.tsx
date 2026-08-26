@@ -26,7 +26,7 @@ export const ProductGridSection: React.FC = () => {
 
   useEffect(() => {
     const fetchProductsAndCategories = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
 
       // Fetch categories
       try {

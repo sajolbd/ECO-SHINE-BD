@@ -4,7 +4,7 @@
  */
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
-  "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
+  "https://backend-eco-shine-bd.vercel.app";
 
 /**
  * Normalizes image paths so uploaded blog images load from the correct active backend API.

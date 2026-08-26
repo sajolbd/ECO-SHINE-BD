@@ -13,7 +13,7 @@ interface PageProps {
 
 async function getProduct(id: string) {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
     const res = await fetch(`${apiUrl}/api/products/${id}`, { 
       next: { revalidate: 3600 },
       signal: AbortSignal.timeout(3000)
