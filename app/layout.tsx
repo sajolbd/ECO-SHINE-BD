@@ -17,7 +17,7 @@ const josefinSans = Josefin_Sans({
   variable: "--font-josefin-sans",
 });
 
-const siteUrl = "https://eco-shine-bd.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.ecoshinebd.com";
 
 /* -------------------------------------------------------------------------- */
 /*                                   METADATA                                 */

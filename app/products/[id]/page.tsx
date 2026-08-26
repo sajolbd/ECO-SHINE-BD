@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const siteUrl = "https://eco-shine-bd.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.ecoshinebd.com";
   const productUrl = `${siteUrl}/products/${product.id}`;
 
   let rawImg = product.images?.[0] || "";
@@ -109,7 +109,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const siteUrl = "https://eco-shine-bd.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.ecoshinebd.com";
   const jsonLd = {
     "@context": "https://schema.org/",
     "@type": "Product",
