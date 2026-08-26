@@ -13,7 +13,7 @@ interface PageProps {
 
 async function getProduct(id: string) {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
     const res = await fetch(`${apiUrl}/api/products/${id}`, { next: { revalidate: 3600 } });
     if (res.ok) {
       const data = await res.json();

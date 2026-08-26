@@ -98,7 +98,7 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   useEffect(() => {
     const fetchRelated = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
         const response = await fetch(`${apiUrl}/api/products?categoryId=${product.categoryId}&limit=10`);
         const data = await response.json();
         if (data.success && data.products && data.products.length > 0) {

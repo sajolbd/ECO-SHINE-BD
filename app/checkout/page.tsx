@@ -43,7 +43,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
         const res = await fetch(`${apiUrl}/api/settings`);
         const data = await res.json();
         if (data.success && data.settings) {

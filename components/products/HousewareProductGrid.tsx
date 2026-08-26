@@ -11,7 +11,7 @@ export const HousewareProductGrid: React.FC = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
       try {
         const response = await fetch(`${apiUrl}/api/products?limit=100`);
         const data = await response.json();

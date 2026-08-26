@@ -42,7 +42,7 @@ export default function AnnouncementBar({ isHouseware = false }: AnnouncementBar
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || API_BASE || "http://localhost:5000";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || API_BASE;
         const res = await fetch(`${apiUrl}/api/homepage`, { cache: "no-store" });
         const data = await res.json();
         if (data.success && data.homepage && data.homepage.announcements && data.homepage.announcements.length > 0) {
