@@ -14,7 +14,10 @@ interface PageProps {
 async function getProduct(id: string) {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
-    const res = await fetch(`${apiUrl}/api/products/${id}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${apiUrl}/api/products/${id}`, { 
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(3000)
+    });
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.product) {

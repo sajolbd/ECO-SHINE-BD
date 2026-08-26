@@ -6,45 +6,39 @@ import { HousewareProductCard } from "./HousewareProductCard";
 import { Home, Sparkles, Package } from "lucide-react";
 
 export const HousewareProductGrid: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const initialHousewareProducts = PRODUCTS_DATA.filter(
+    (p) => p.categoryId === "houseware" || p.categoryId === "homecare"
+  );
+  const [products, setProducts] = useState<Product[]>(initialHousewareProducts);
 
   useEffect(() => {
     const fetchProducts = async () => {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://ua-engineering-pte-ltd-backend-production.up.railway.app";
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
       try {
-        const response = await fetch(`${apiUrl}/api/products?limit=100`);
+        const response = await fetch(`${apiUrl}/api/products?limit=100`, {
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
         const data = await response.json();
         if (data.success && data.products && data.products.length > 0) {
           const housewareProducts = data.products.filter(
             (p: Product) =>
               p.categoryId === "houseware" || p.categoryId === "homecare"
           );
-          setProducts(housewareProducts);
-        } else {
-          throw new Error("No products");
+          if (housewareProducts.length > 0) {
+            setProducts(housewareProducts);
+          }
         }
-      } catch {
-        // Fallback to static data
-        const housewareProducts = PRODUCTS_DATA.filter(
-          (p) => p.categoryId === "houseware" || p.categoryId === "homecare"
-        );
-        setProducts(housewareProducts);
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        // Silently keep using static products fallback on timeout or error
+        console.log("Using static houseware products fallback:", err);
       }
     };
     fetchProducts();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="py-24 flex flex-col items-center justify-center gap-4">
-        <div className="w-12 h-12 rounded-full border-4 border-orange-200 border-t-orange-500 animate-spin" />
-        <p className="text-orange-600 font-semibold text-sm">লোডিং প্রোডাক্টস...</p>
-      </div>
-    );
-  }
 
   return (
     <section className="pt-6 pb-12 md:pt-8 md:pb-16 bg-orange-50/40 min-h-screen scroll-mt-24" id="houseware-products">

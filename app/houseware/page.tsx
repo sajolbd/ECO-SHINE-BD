@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { HousewareProductGrid } from "../../components/products/HousewareProductGrid";
 import { SuccessModal } from "../../components/checkout/SuccessModal";
 import { FloatingCartButton } from "../../components/cart/FloatingCartButton";
@@ -14,15 +13,7 @@ export const metadata: Metadata = {
 export default function HousewarePage() {
   return (
     <main className="min-h-screen bg-orange-50/30">
-      <Suspense
-        fallback={
-          <div className="py-20 text-center text-orange-500 font-bold">
-            লোডিং প্রোডাক্টস...
-          </div>
-        }
-      >
-        <HousewareProductGrid />
-      </Suspense>
+      <HousewareProductGrid />
       <SuccessModal />
       <FloatingCartButton />
       <Footer />
