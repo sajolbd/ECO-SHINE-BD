@@ -7,6 +7,7 @@ import { Product } from "../data/productsData";
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedColor?: string;
 }
 
 export interface OrderDetails {
@@ -25,7 +26,7 @@ export interface OrderDetails {
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
+  addToCart: (product: Product, quantity?: number, selectedColor?: string) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -34,7 +35,7 @@ interface CartContextType {
   
   // Checkout Modal State
   isCheckoutOpen: boolean;
-  openCheckout: (directProduct?: Product) => void;
+  openCheckout: (directProduct?: Product, selectedColor?: string) => void;
   closeCheckout: () => void;
   
   // Order Success State
@@ -59,15 +60,18 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<OrderDetails | null>(null);
 
-  const addToCart = (product: Product, quantity = 1) => {
+  const addToCart = (product: Product, quantity = 1, selectedColor?: string) => {
     setCart((prev) => {
-      const existingIndex = prev.findIndex((item) => item.product.id === product.id);
+      const colorToUse = selectedColor || product.selectedColor || (product.colors && product.colors[0]) || "";
+      const existingIndex = prev.findIndex(
+        (item) => item.product.id === product.id && item.selectedColor === colorToUse
+      );
       if (existingIndex > -1) {
         const updated = [...prev];
         updated[existingIndex].quantity += quantity;
         return updated;
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity, selectedColor: colorToUse }];
     });
   };
 
@@ -94,14 +98,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  const openCheckout = (directProduct?: Product) => {
+  const openCheckout = (directProduct?: Product, selectedColor?: string) => {
     if (directProduct) {
-      // Add product if not present
-      setCart((prev) => {
-        const exists = prev.some((i) => i.product.id === directProduct.id);
-        if (exists) return prev;
-        return [{ product: directProduct, quantity: 1 }];
-      });
+      const colorToUse = selectedColor || directProduct.selectedColor || (directProduct.colors && directProduct.colors[0]) || "";
+      // Set single item for direct checkout
+      setCart([{ product: directProduct, quantity: 1, selectedColor: colorToUse }]);
     }
     setIsCheckoutOpen(true);
     if (typeof window !== "undefined") {
@@ -140,6 +141,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           items: cart.map((item) => ({
             productId: item.product.id,
             quantity: item.quantity,
+            selectedColor: item.selectedColor || item.product.selectedColor || "",
           })),
         }),
       });

@@ -36,6 +36,12 @@ export interface Product {
   inStock?: boolean;
   stockCount?: number;
   status?: "active" | "inactive";
+  freeDelivery?: boolean;
+  freeDeliveryMinQty?: number;
+  isCombo?: boolean;
+  comboItems?: { productId: string; title: string; quantity: number }[];
+  colors?: string[];
+  selectedColor?: string;
 }
 
 export interface CategoryTab {
@@ -173,26 +179,6 @@ export const PRODUCTS_DATA: Product[] = [
     unit: "৫০০ মিলি স্প্রে",
     badge: "ইকো চয়েস",
     description: "গাড়ির ড্যাশবোর্ড, বডি ও মেটাল সারফেস মুহূর্তেই চকচকে করার কার্যকরী স্প্রে।",
-  },
-  {
-    id: "auto-7",
-    title: "বাবল বস আল্ট্রা ফোমিং ওয়াশ কম্বো প্যাক",
-    category: "Cleaning products",
-    categoryId: "cleaning-products",
-    price: 890,
-    originalPrice: 1100,
-    rating: 4.8,
-    reviewsCount: 420,
-    images: [
-      "/images/products/product-3.jpeg",
-      "/images/products/product-7.jpeg",
-      "/images/products/product-5.jpeg",
-    ],
-    phone: DEFAULT_PHONE,
-    whatsapp: DEFAULT_WHATSAPP,
-    unit: "কম্বো সেট",
-    badge: "অফার",
-    description: "কার ফোমিং ওয়াশ জেল এবং শাইনিং ওয়াক্স একসাথে বিশেষ সাশ্রয়ী কম্বো প্যাকেজে।",
   },
   {
     id: "auto-8",

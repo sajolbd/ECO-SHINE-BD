@@ -21,6 +21,7 @@ import {
   X,
   Check,
   ArrowLeft,
+  Package,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Product, getRelatedProducts } from "../../data/productsData";
@@ -46,6 +47,9 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   // State management
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    product.colors && product.colors.length > 0 ? product.colors[0] : ""
+  );
   const [activeTab, setActiveTab] = useState<
     "overview" | "usage" | "specs" | "reviews" | "faqs"
   >("overview");
@@ -282,6 +286,11 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                     {product.badge}
                   </span>
                 )}
+                {product.freeDelivery && (
+                  <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-lg shadow-md uppercase tracking-wider">
+                    ফ্রি ডেলিভারি
+                  </span>
+                )}
                 {discountPercent > 0 && (
                   <span className="px-3 py-1 bg-amber-500 text-slate-950 text-xs font-black rounded-lg shadow-md">
                     {discountPercent}% ছাড়!
@@ -402,7 +411,58 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                     ৳ সাশ্রয় করছেন!
                   </p>
                 )}
+
+                {(() => {
+                  const isFree = product.isCombo || product.freeDelivery;
+                  if (!isFree) return null;
+
+                  const minQty = product.freeDeliveryMinQty || 1;
+
+                  if (minQty <= 1 || product.isCombo) {
+                    return (
+                      <div className="mt-2.5 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-2 text-emerald-800 text-xs sm:text-sm font-bold">
+                        <Truck className="w-4.5 h-4.5 text-emerald-600 shrink-0" />
+                        <span>🚚 স্পেশাল অফার: এই প্রোডাক্টের ডেলিভারি চার্জ একদম ফ্রি! (০৳)</span>
+                      </div>
+                    );
+                  }
+
+                  if (quantity >= minQty) {
+                    return (
+                      <div className="mt-2.5 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-2 text-emerald-800 text-xs sm:text-sm font-bold animate-fadeIn">
+                        <Truck className="w-4.5 h-4.5 text-emerald-600 shrink-0" />
+                        <span>🎉 অভিনন্দন! আপনি {quantity}টি সিলেক্ট করায় ফ্রি ডেলিভারি পাচ্ছেন! (ডেলিভারি চার্জ ০৳)</span>
+                      </div>
+                    );
+                  } else {
+                    const needed = minQty - quantity;
+                    return (
+                      <div className="mt-2.5 p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center gap-2 text-amber-900 text-xs sm:text-sm font-bold animate-fadeIn">
+                        <Truck className="w-4.5 h-4.5 text-amber-600 shrink-0" />
+                        <span>💡 অফার: সর্বনিম্ন {minQty}টি কিনলে ফ্রি ডেলিভারি! (আর {needed}টি যুক্ত করলেই ডেলিভারি চার্জ ফ্রি)</span>
+                      </div>
+                    );
+                  }
+                })()}
               </div>
+
+              {/* Combo Included Items Box */}
+              {product.comboItems && product.comboItems.length > 0 && (
+                <div className="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200/80 space-y-2.5">
+                  <h4 className="text-xs font-black text-emerald-950 uppercase tracking-wider flex items-center gap-2">
+                    <Package className="w-4 h-4 text-emerald-600" />
+                    <span>এই কম্বো প্যাকেজে রয়েছে (Included Items):</span>
+                  </h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-bold text-slate-800">
+                    {product.comboItems.map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-emerald-100 shadow-2xs">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>{item.title} ({item.quantity}টি)</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Short Description */}
               <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
@@ -429,6 +489,40 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
 
             {/* Action Section */}
             <div className="space-y-4 pt-4 border-t border-slate-200">
+              {/* Color Selector */}
+              {product.colors && product.colors.length > 0 && (
+                <div className="space-y-2 pb-2">
+                  <label className="block text-sm font-extrabold text-slate-900">
+                    কালার অপশন নির্বাচন করুন:{" "}
+                    <span className={isHouseware ? "text-orange-600 font-bold" : "text-emerald-700 font-bold"}>
+                      {selectedColor || product.colors[0]}
+                    </span>
+                  </label>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {product.colors.map((colorName) => {
+                      const isSelected = selectedColor === colorName;
+                      return (
+                        <button
+                          key={colorName}
+                          type="button"
+                          onClick={() => setSelectedColor(colorName)}
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border flex items-center gap-1.5 cursor-pointer ${
+                            isSelected
+                              ? isHouseware
+                                ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                                : "bg-emerald-600 text-white border-emerald-600 shadow-sm"
+                              : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          <span>{colorName}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Quantity Selector */}
               <div className="flex items-center gap-4">
                 <span className="text-sm font-extrabold text-slate-900">পরিমাণ:</span>

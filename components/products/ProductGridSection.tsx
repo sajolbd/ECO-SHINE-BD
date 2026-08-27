@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { PRODUCTS_DATA, Product } from "../../data/productsData";
 import { ProductCard } from "./ProductCard";
-import { Home, Sparkles } from "lucide-react";
+import { Home, Sparkles, Package } from "lucide-react";
 
 interface Category {
   _id: string;
@@ -18,6 +18,7 @@ interface Category {
 const STATIC_CATEGORIES: Category[] = [
   { _id: "1", name: "Cleaning products", slug: "cleaning-products", status: "active", displayOrder: 1 },
   { _id: "2", name: "Houseware", slug: "houseware", status: "active", displayOrder: 2 },
+  { _id: "3", name: "Combo Packs", slug: "combo-packs", status: "active", displayOrder: 3 },
 ];
 
 export const ProductGridSection: React.FC = () => {
@@ -80,16 +81,60 @@ export const ProductGridSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Dynamic Category List: Combine API categories with any category present in products */}
+        {/* ── 1. COMBO OFFERS SECTION (ALWAYS SHOWN AT VERY TOP OF PRODUCTS) ── */}
+        {(() => {
+          const comboProducts = products.filter(
+            (p) =>
+              p.isCombo ||
+              p.categoryId === "combo-packs" ||
+              p.badge?.includes("কম্বো") ||
+              p.unit?.includes("কম্বো") ||
+              p.title.includes("কম্বো")
+          );
+
+          if (comboProducts.length === 0) return null;
+
+          return (
+            <div id="combo-packs" className="space-y-4 pt-2 scroll-mt-24">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-xl bg-emerald-100 text-emerald-800">
+                    <Package className="w-6 h-6 text-emerald-700" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                      🎁 কম্বো অফার প্যাক (ফ্রি ডেলিভারি)
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
+                      বিশেষ কম্বো প্যাকসমূহ — প্রতিটি কম্বোতে সম্পূর্ণ ফ্রি হোম ডেলিভারি!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4-Column Grid for Desktop, 2-Column for Mobile */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+                {comboProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ── 2. STANDARD CATEGORIES LIST (CLEANING PRODUCTS ETC.) ── */}
         {(() => {
           const catMap = new Map<string, Category>();
-          categories.forEach((cat) => catMap.set(cat.slug, cat));
+          categories.forEach((cat) => {
+            if (cat.slug !== "combo-packs") catMap.set(cat.slug, cat);
+          });
 
           products.forEach((p) => {
             if (
               p.categoryId &&
               p.categoryId !== "houseware" &&
               p.categoryId !== "homecare" &&
+              p.categoryId !== "combo-packs" &&
               !catMap.has(p.categoryId)
             ) {
               catMap.set(p.categoryId, {
@@ -103,30 +148,27 @@ export const ProductGridSection: React.FC = () => {
           });
 
           return Array.from(catMap.values())
-            .filter((cat) => cat.slug !== "houseware" && cat.slug !== "homecare")
+            .filter((cat) => cat.slug !== "houseware" && cat.slug !== "homecare" && cat.slug !== "combo-packs")
             .map((cat, idx) => {
               const categoryProducts = products.filter(
-                (p) => p.categoryId === cat.slug
+                (p) => p.categoryId === cat.slug && !p.isCombo && !p.badge?.includes("কম্বো") && !p.unit?.includes("কম্বো") && !p.title.includes("কম্বো")
               );
+
               if (categoryProducts.length === 0) return null;
 
               return (
-                <div key={cat.slug} className={`space-y-4 ${idx > 0 ? "pt-6 border-t border-slate-200/80" : ""}`}>
+                <div key={cat.slug} className="space-y-4 pt-6 border-t border-slate-200/80">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
                     <div className="flex items-center gap-3">
                       <div className={`p-3 rounded-xl ${
                         cat.slug === "cleaning-products" || cat.slug === "autocare"
                           ? "bg-emerald-100 text-emerald-800"
-                          : cat.slug === "houseware" || cat.slug === "homecare"
-                          ? "bg-amber-100 text-amber-900"
                           : "bg-blue-100 text-blue-800"
                       }`}>
                         {cat.slug === "cleaning-products" || cat.slug === "autocare" ? (
                           <Sparkles className="w-6 h-6" />
-                        ) : cat.slug === "houseware" || cat.slug === "homecare" ? (
-                          <Home className="w-6 h-6" />
                         ) : (
-                          <Sparkles className="w-6 h-6" />
+                          <Home className="w-6 h-6" />
                         )}
                       </div>
                       <div>

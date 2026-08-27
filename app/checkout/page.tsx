@@ -57,7 +57,13 @@ export default function CheckoutPage() {
     fetchSettings();
   }, []);
 
-  const deliveryFee = deliveryArea === "inside" ? deliveryChargeInside : deliveryChargeOutside;
+  const hasFreeDelivery = cart.some((item) => {
+    if (item.product.isCombo) return true;
+    if (!item.product.freeDelivery) return false;
+    const minQty = item.product.freeDeliveryMinQty || 1;
+    return item.quantity >= minQty;
+  });
+  const deliveryFee = hasFreeDelivery ? 0 : (deliveryArea === "inside" ? deliveryChargeInside : deliveryChargeOutside);
   const totalPrice = subtotal + deliveryFee;
 
   const validateForm = () => {
@@ -203,6 +209,31 @@ export default function CheckoutPage() {
                         <h3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
                           {item.product.title}
                         </h3>
+                        {item.product.colors && item.product.colors.length > 0 && (
+                          <div className="flex items-center gap-1.5 my-1 overflow-x-auto">
+                            <span className="text-[10px] font-bold text-slate-500 shrink-0">কালার:</span>
+                            {item.product.colors.map((colorName) => {
+                              const isSelected = (item.selectedColor || item.product.colors![0]) === colorName;
+                              return (
+                                <button
+                                  key={colorName}
+                                  type="button"
+                                  onClick={() => {
+                                    item.selectedColor = colorName;
+                                    updateQuantity(item.product.id, item.quantity);
+                                  }}
+                                  className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
+                                    isSelected
+                                      ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
+                                      : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                                  }`}
+                                >
+                                  {colorName}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                         <div className="flex items-baseline gap-2">
                           <span className="text-sm font-black text-[#E00000]">
                             {item.product.price}৳
@@ -340,6 +371,13 @@ export default function CheckoutPage() {
 
                 {/* Delivery Area Selection */}
                 <div>
+                  {hasFreeDelivery && (
+                    <div className="mb-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2.5 text-emerald-800 text-xs font-bold">
+                      <Truck className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>🎉 আপনার কার্টে ফ্রি ডেলিভারির পণ্য থাকায় ডেলিভারি চার্জ সম্পূর্ণ ফ্রি! (০৳)</span>
+                    </div>
+                  )}
+
                   <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                     ডেলিভারি এরিয়া নির্বাচন করুন <span className="text-red-500">*</span>
                   </label>
@@ -355,7 +393,9 @@ export default function CheckoutPage() {
                         <MapPin className="w-4 h-4 text-primary shrink-0" />
                         <span className="text-xs font-bold">ঢাকার ভেতরে</span>
                       </div>
-                      <span className="text-sm font-black text-primary">{deliveryChargeInside}৳</span>
+                      <span className="text-sm font-black text-primary">
+                        {hasFreeDelivery ? "০৳ (ফ্রি)" : `${deliveryChargeInside}৳`}
+                      </span>
                     </label>
 
                     <label
@@ -369,9 +409,28 @@ export default function CheckoutPage() {
                         <Truck className="w-4 h-4 text-primary shrink-0" />
                         <span className="text-xs font-bold">ঢাকার বাইরে</span>
                       </div>
-                      <span className="text-sm font-black text-primary">{deliveryChargeOutside}৳</span>
+                      <span className="text-sm font-black text-primary">
+                        {hasFreeDelivery ? "০৳ (ফ্রি)" : `${deliveryChargeOutside}৳`}
+                      </span>
                     </label>
                   </div>
+                </div>
+
+                {/* Special Instructions / Note Input Box */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                    স্পেশাল ইনস্ট্রাকশন / বিশেষ বার্তা <span className="text-slate-400 font-normal">(Optional)</span>
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="যেমন: বিকেলে ডেলিভারি দিলে ভালো হয়, বা গেটে রেখে কল দিবেন..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm font-medium focus:outline-none bg-[#1e293b] text-white placeholder-slate-400"
+                  />
+                  <p className="text-[11px] text-slate-400 font-medium mt-1">
+                    ডেলিভারি ম্যানের জন্য কোনো বিশেষ বার্তা বা নির্দেশ থাকলে লিখে দিন।
+                  </p>
                 </div>
 
                 {/* Payment Method Card */}
@@ -382,7 +441,7 @@ export default function CheckoutPage() {
                     </div>
                     <div>
                       <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                        ক্যাশ অন ডেলিভারি (Cash on Delivery)
+                        ক্যাশ অন ডেলিভারি (Cash On Delivery)
                       </h3>
                       <p className="text-[11px] text-slate-600">
                         পণ্য হাতে পেয়ে চেক করে পেমেন্ট করুন।
@@ -400,7 +459,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-xs sm:text-sm text-slate-600 font-medium">
                     <span>ডেলিভারি চার্জ:</span>
-                    <span>{deliveryFee}৳</span>
+                    <span>{deliveryFee === 0 ? "০৳ (ফ্রি)" : `${deliveryFee}৳`}</span>
                   </div>
                   <div className="flex justify-between text-base sm:text-lg font-black text-slate-900 pt-2 border-t border-slate-200">
                     <span>সর্বমোট প্রদেয় টাকা:</span>

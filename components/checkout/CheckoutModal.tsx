@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, ShoppingBag, Truck, CheckCircle2, ShieldCheck, MapPin, Phone, User, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
@@ -23,9 +23,35 @@ export const CheckoutModal: React.FC = () => {
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
 
+  const [deliveryChargeInside, setDeliveryChargeInside] = useState(70);
+  const [deliveryChargeOutside, setDeliveryChargeOutside] = useState(130);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
+        const res = await fetch(`${apiUrl}/api/settings`);
+        const data = await res.json();
+        if (data.success && data.settings) {
+          setDeliveryChargeInside(data.settings.deliveryChargeInside ?? 70);
+          setDeliveryChargeOutside(data.settings.deliveryChargeOutside ?? 130);
+        }
+      } catch {
+        // Fallback
+      }
+    };
+    fetchSettings();
+  }, []);
+
   if (!isCheckoutOpen) return null;
 
-  const deliveryFee = deliveryArea === "inside" ? 70 : 130;
+  const hasFreeDelivery = cart.some((item) => {
+    if (item.product.isCombo) return true;
+    if (!item.product.freeDelivery) return false;
+    const minQty = item.product.freeDeliveryMinQty || 1;
+    return item.quantity >= minQty;
+  });
+  const deliveryFee = hasFreeDelivery ? 0 : (deliveryArea === "inside" ? deliveryChargeInside : deliveryChargeOutside);
   const totalPrice = subtotal + deliveryFee;
 
   const validateForm = () => {
@@ -65,7 +91,7 @@ export const CheckoutModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 md:p-6 animate-fadeIn">
       <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-        
+
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-primary via-emerald-700 to-primary text-white shrink-0">
           <div className="flex items-center gap-2.5">
@@ -85,7 +111,7 @@ export const CheckoutModal: React.FC = () => {
 
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6">
-          
+
           {cart.length === 0 ? (
             /* Empty Cart View */
             <div className="text-center py-10 space-y-4">
@@ -141,6 +167,31 @@ export const CheckoutModal: React.FC = () => {
                         <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
                           {item.product.title}
                         </h4>
+                        {item.product.colors && item.product.colors.length > 0 && (
+                          <div className="flex items-center gap-1.5 my-1 overflow-x-auto">
+                            <span className="text-[10px] font-bold text-slate-500 shrink-0">কালার:</span>
+                            {item.product.colors.map((colorName) => {
+                              const isSelected = (item.selectedColor || item.product.colors![0]) === colorName;
+                              return (
+                                <button
+                                  key={colorName}
+                                  type="button"
+                                  onClick={() => {
+                                    item.selectedColor = colorName;
+                                    updateQuantity(item.product.id, item.quantity);
+                                  }}
+                                  className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
+                                    isSelected
+                                      ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
+                                      : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                                  }`}
+                                >
+                                  {colorName}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                         <p className="text-xs font-semibold text-[#E00000]">
                           {item.product.price}৳ × {item.quantity} = {(item.product.price * item.quantity).toLocaleString("en-BD")}৳
                         </p>
@@ -193,10 +244,10 @@ export const CheckoutModal: React.FC = () => {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="যেমন: রহিম আহমেদ"
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
+                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 ${
                         errors.name
                           ? "border-red-500 focus:ring-red-200"
-                          : "border-slate-700 focus:border-primary focus:ring-primary/20"
+                          : "border-slate-200 focus:border-primary focus:ring-primary/20"
                       }`}
                     />
                   </div>
@@ -216,10 +267,10 @@ export const CheckoutModal: React.FC = () => {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="যেমন: 01712345678"
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
+                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 ${
                         errors.phone
                           ? "border-red-500 focus:ring-red-200"
-                          : "border-slate-700 focus:border-primary focus:ring-primary/20"
+                          : "border-slate-200 focus:border-primary focus:ring-primary/20"
                       }`}
                     />
                   </div>
@@ -238,10 +289,10 @@ export const CheckoutModal: React.FC = () => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="যেমন: বাসা #১২, রোড #০৫, ব্লক-বি, মিরপুর, ঢাকা"
-                    className={`w-full px-4 py-2 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 bg-[#1e293b] text-white placeholder-slate-400 ${
+                    className={`w-full px-4 py-2 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 ${
                       errors.address
                         ? "border-red-500 focus:ring-red-200"
-                        : "border-slate-700 focus:border-primary focus:ring-primary/20"
+                        : "border-slate-200 focus:border-primary focus:ring-primary/20"
                     }`}
                   />
                   {errors.address && (
@@ -251,6 +302,13 @@ export const CheckoutModal: React.FC = () => {
 
                 {/* Delivery Area Selection */}
                 <div>
+                  {hasFreeDelivery && (
+                    <div className="mb-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2.5 text-emerald-800 text-xs font-bold">
+                      <Truck className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>🎉 আপনার কার্টে ফ্রি ডেলিভারির পণ্য থাকায় ডেলিভারি চার্জ সম্পূর্ণ ফ্রি! (০৳)</span>
+                    </div>
+                  )}
+
                   <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                     ডেলিভারি এরিয়া নির্বাচন করুন <span className="text-red-500">*</span>
                   </label>
@@ -267,7 +325,9 @@ export const CheckoutModal: React.FC = () => {
                         <MapPin className="w-4 h-4 text-primary" />
                         <span className="text-xs sm:text-sm">ঢাকার ভেতরে</span>
                       </div>
-                      <span className="text-xs font-black text-primary">৭০৳</span>
+                      <span className="text-xs font-black text-primary">
+                        {hasFreeDelivery ? "০৳ (ফ্রি)" : `${deliveryChargeInside}৳`}
+                      </span>
                     </label>
 
                     <label
@@ -282,63 +342,82 @@ export const CheckoutModal: React.FC = () => {
                         <Truck className="w-4 h-4 text-primary" />
                         <span className="text-xs sm:text-sm">ঢাকার বাইরে</span>
                       </div>
-                      <span className="text-xs font-black text-primary">১৩০৳</span>
+                      <span className="text-xs font-black text-primary">
+                        {hasFreeDelivery ? "০৳ (ফ্রি)" : `${deliveryChargeOutside}৳`}
+                      </span>
                     </label>
                   </div>
                 </div>
 
-                {/* Payment Method - Cash on Delivery */}
-                <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-amber-100 text-amber-800">
-                      <ShieldCheck className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                        পেমেন্ট মেথড: ক্যাশ অন ডেলিভারি (Cash on Delivery)
-                      </h4>
-                      <p className="text-[11px] text-slate-600 font-medium">
-                        পণ্য হাতে পেয়ে চেক করে টাকা পরিশোধ করুন।
-                      </p>
-                    </div>
-                  </div>
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                {/* Special Instructions / Note Input Box */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                    স্পেশাল ইনস্ট্রাকশন / বিশেষ বার্তা <span className="text-slate-400 font-normal">(Optional)</span>
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="যেমন: বিকেলে ডেলিভারি দিলে ভালো হয়, বা গেটে রেখে কল দিবেন..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm font-medium focus:outline-none"
+                  />
+                  <p className="text-[11px] text-slate-400 font-medium mt-1">
+                    ডেলিভারি ম্যানের জন্য কোনো বিশেষ বার্তা বা নোট থাকলে এখানে লিখে দিতে পারেন।
+                  </p>
                 </div>
 
-                {/* Order Total & Submit */}
-                <div className="pt-3 border-t space-y-3">
-                  <div className="space-y-1 text-xs sm:text-sm font-medium text-slate-600">
-                    <div className="flex justify-between">
-                      <span>পণ্যের মোট মূল্য:</span>
-                      <span>{subtotal.toLocaleString("en-BD")}৳</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>ডেলিভারি চার্জ:</span>
-                      <span>{deliveryFee}৳</span>
-                    </div>
-                    <div className="flex justify-between text-base font-extrabold text-slate-900 pt-1 border-t">
-                      <span>সর্বমোট প্রদেয় টাকা:</span>
-                      <span className="text-[#E00000] text-lg font-black">
-                        {totalPrice.toLocaleString("en-BD")}৳
-                      </span>
-                    </div>
-                  </div>
+      {/* Payment Method - Cash on Delivery */}
+      <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-amber-100 text-amber-800">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+              পেমেন্ট মেথড: ক্যাশ অন ডেলিভারি (Cash on Delivery)
+            </h4>
+            <p className="text-[11px] text-slate-600 font-medium">
+              পণ্য হাতে পেয়ে চেক করে টাকা পরিশোধ করুন।
+            </p>
+          </div>
+        </div>
+        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+      </div>
 
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 bg-primary hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold rounded-xl transition-all text-base sm:text-lg shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>অর্ডার প্লেস করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
-                  </button>
-                </div>
+      {/* Order Total & Submit */}
+      <div className="pt-3 border-t space-y-3">
+        <div className="space-y-1 text-xs sm:text-sm font-medium text-slate-600">
+          <div className="flex justify-between">
+            <span>পণ্যের মোট মূল্য:</span>
+            <span>{subtotal.toLocaleString("en-BD")}৳</span>
+          </div>
+          <div className="flex justify-between">
+            <span>ডেলিভারি চার্জ:</span>
+            <span>{deliveryFee === 0 ? "০৳ (ফ্রি)" : `${deliveryFee}৳`}</span>
+          </div>
+          <div className="flex justify-between text-base font-extrabold text-slate-900 pt-1 border-t">
+            <span>সর্বমোট প্রদেয় টাকা:</span>
+            <span className="text-[#E00000] text-lg font-black">
+              {totalPrice.toLocaleString("en-BD")}৳
+            </span>
+          </div>
+        </div>
 
-              </form>
+        <button
+          type="submit"
+          className="w-full py-3.5 bg-primary hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold rounded-xl transition-all text-base sm:text-lg shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <CheckCircle2 className="w-5 h-5" />
+          <span>অর্ডার প্লেস করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
+        </button>
+      </div>
+
+    </form>
             </>
           )}
 
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   );
 };

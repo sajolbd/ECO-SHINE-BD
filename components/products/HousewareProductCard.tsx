@@ -52,6 +52,11 @@ export const HousewareProductCard: React.FC<ProductCardProps> = ({ product }) =>
                 {product.badge}
               </span>
             )}
+            {product.freeDelivery && (
+              <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-emerald-600 text-white text-[9px] sm:text-[10px] font-bold rounded-md shadow-xs uppercase tracking-wide z-10">
+                {(product.freeDeliveryMinQty || 1) > 1 ? `${product.freeDeliveryMinQty}+ টিতে ফ্রি` : "ফ্রি ডেলিভারি"}
+              </span>
+            )}
             <div className="absolute inset-0 bg-orange-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <span className="px-2.5 py-1 bg-white/90 text-slate-900 rounded-full font-bold text-[10px] sm:text-[11px] shadow-md flex items-center gap-1 backdrop-blur-xs">
                 <Eye className="w-3 h-3 text-orange-500" />
