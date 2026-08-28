@@ -52,9 +52,11 @@ export const HousewareProductCard: React.FC<ProductCardProps> = ({ product }) =>
                 {product.badge}
               </span>
             )}
-            {product.freeDelivery && (
+            {product.freeDelivery === false ? null : (
               <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-emerald-600 text-white text-[9px] sm:text-[10px] font-bold rounded-md shadow-xs uppercase tracking-wide z-10">
-                {(product.freeDeliveryMinQty || 1) > 1 ? `${product.freeDeliveryMinQty}+ টিতে ফ্রি` : "ফ্রি ডেলিভারি"}
+                {(product.freeDeliveryMinQty || (product.freeDelivery ? 1 : 2)) > 1
+                  ? `${product.freeDeliveryMinQty || 2}+ টিতে ফ্রি`
+                  : "ফ্রি ডেলিভারি"}
               </span>
             )}
             <div className="absolute inset-0 bg-orange-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

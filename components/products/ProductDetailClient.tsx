@@ -413,10 +413,11 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                 )}
 
                 {(() => {
-                  const isFree = product.isCombo || product.freeDelivery;
-                  if (!isFree) return null;
+                  if (product.freeDelivery === false) return null;
 
-                  const minQty = product.freeDeliveryMinQty || 1;
+                  const minQty = product.isCombo
+                    ? 1
+                    : (product.freeDeliveryMinQty || (product.freeDelivery ? 1 : 2));
 
                   if (minQty <= 1 || product.isCombo) {
                     return (

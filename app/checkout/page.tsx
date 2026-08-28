@@ -59,8 +59,8 @@ export default function CheckoutPage() {
 
   const hasFreeDelivery = cart.some((item) => {
     if (item.product.isCombo) return true;
-    if (!item.product.freeDelivery) return false;
-    const minQty = item.product.freeDeliveryMinQty || 1;
+    if (item.product.freeDelivery === false) return false;
+    const minQty = item.product.freeDeliveryMinQty || (item.product.freeDelivery ? 1 : 2);
     return item.quantity >= minQty;
   });
   const deliveryFee = hasFreeDelivery ? 0 : (deliveryArea === "inside" ? deliveryChargeInside : deliveryChargeOutside);
