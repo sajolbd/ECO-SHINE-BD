@@ -57,12 +57,27 @@ export default function CheckoutPage() {
     fetchSettings();
   }, []);
 
-  const hasFreeDelivery = cart.some((item) => {
-    if (item.product.isCombo) return true;
-    if (item.product.freeDelivery === false) return false;
-    const minQty = item.product.freeDeliveryMinQty || (item.product.freeDelivery ? 1 : 2);
-    return item.quantity >= minQty;
-  });
+  const hasFreeDelivery = (() => {
+    if (cart.some((item) => item.product.isCombo)) return true;
+
+    // Group cart items by product ID to sum total quantity of the SAME product
+    const productQuantities = new Map<string, { qty: number; product: Product }>();
+    cart.forEach((item) => {
+      const existing = productQuantities.get(item.product.id);
+      if (existing) {
+        existing.qty += item.quantity;
+      } else {
+        productQuantities.set(item.product.id, { qty: item.quantity, product: item.product });
+      }
+    });
+
+    for (const { qty, product } of productQuantities.values()) {
+      if (product.freeDelivery === false) continue;
+      const minQty = product.freeDeliveryMinQty || (product.freeDelivery ? 1 : 2);
+      if (qty >= minQty) return true;
+    }
+    return false;
+  })();
   const deliveryFee = hasFreeDelivery ? 0 : (deliveryArea === "inside" ? deliveryChargeInside : deliveryChargeOutside);
   const totalPrice = subtotal + deliveryFee;
 
