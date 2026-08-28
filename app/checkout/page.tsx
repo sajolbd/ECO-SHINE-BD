@@ -73,7 +73,6 @@ export default function CheckoutPage() {
     });
 
     for (const { qty, product } of Array.from(productQuantities.values())) {
-      if (product.freeDelivery === false) continue;
       const minQty = product.freeDeliveryMinQty || (product.freeDelivery ? 1 : 2);
       if (qty >= minQty) return true;
     }
