@@ -415,13 +415,13 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                 {(() => {
                   const minQty = product.isCombo
                     ? 1
-                    : (product.freeDeliveryMinQty || (product.freeDelivery ? 1 : 2));
+                    : ((product.freeDeliveryMinQty && product.freeDeliveryMinQty > 1) ? product.freeDeliveryMinQty : 2);
 
-                  if (minQty <= 1 || product.isCombo) {
+                  if (product.isCombo) {
                     return (
                       <div className="mt-2.5 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-2 text-emerald-800 text-xs sm:text-sm font-bold">
                         <Truck className="w-4.5 h-4.5 text-emerald-600 shrink-0" />
-                        <span>🚚 স্পেশাল অফার: এই প্রোডাক্টের ডেলিভারি চার্জ একদম ফ্রি! (০৳)</span>
+                        <span>🚚 স্পেশাল অফার: এই কম্বো প্রোডাক্টের ডেলিভারি চার্জ একদম ফ্রি! (০৳)</span>
                       </div>
                     );
                   }
