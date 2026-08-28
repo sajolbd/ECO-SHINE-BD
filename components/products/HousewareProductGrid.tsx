@@ -45,6 +45,25 @@ export const HousewareProductGrid: React.FC = () => {
     fetchProducts();
   }, []);
 
+  const isHouseware = (p: Product) =>
+    p.categoryId === "houseware" ||
+    p.categoryId === "homecare" ||
+    p.category?.toLowerCase().includes("house") ||
+    p.category?.toLowerCase().includes("home");
+
+  const isCombo = (p: Product) =>
+    Boolean(
+      p.isCombo ||
+      p.badge?.includes("কম্বো") ||
+      p.unit?.includes("কম্বো") ||
+      p.title?.includes("কম্বো")
+    );
+
+  const housewareCombos = products.filter((p) => isHouseware(p) && isCombo(p));
+  const housewareRegularProducts = products.filter(
+    (p) => isHouseware(p) && !isCombo(p)
+  );
+
   return (
     <section className="pt-6 pb-12 md:pt-8 md:pb-16 bg-orange-50/40 min-h-screen scroll-mt-24" id="houseware-products">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 md:space-y-8">
@@ -82,7 +101,34 @@ export const HousewareProductGrid: React.FC = () => {
           ))}
         </div>
 
-        {/* Product Grid */}
+        {/* ── 1. HOUSEWARE COMBO PACKS SECTION (ALWAYS SHOWN AT TOP WITH TITLE) ── */}
+        {housewareCombos.length > 0 && (
+          <div id="houseware-combos" className="space-y-4 pt-2 scroll-mt-24">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-orange-200/80 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-orange-500 text-white shadow-md">
+                  <Package className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+                    🎁 হাউসওয়্যার বিশেষ কম্বো প্যাকসমূহ (ফ্রি ডেলিভারি)
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-0.5 font-medium">
+                    ইমপোর্টার্স বিডি হাউসওয়্যার ক্যাটালগের বিশেষ কম্বো প্যাকসমূহ – প্রতিটি কম্বোতে সম্পূর্ণ ফ্রি হোম ডেলিভারি!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+              {housewareCombos.map((product) => (
+                <HousewareProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── 2. REGULAR HOUSEWARE PRODUCTS GRID ── */}
         {products.length === 0 ? (
           <div className="py-16 text-center space-y-3">
             <div className="w-16 h-16 rounded-2xl bg-orange-100 flex items-center justify-center mx-auto">
@@ -91,10 +137,21 @@ export const HousewareProductGrid: React.FC = () => {
             <p className="text-slate-500 font-semibold">কোনো পণ্য পাওয়া যায়নি।</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-            {products.map((product) => (
-              <HousewareProductCard key={product.id} product={product} />
-            ))}
+          <div className="space-y-4 pt-2">
+            {housewareCombos.length > 0 && (
+              <div className="border-b border-orange-200/80 pb-2">
+                <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                  <Home className="w-5 h-5 text-orange-500" />
+                  <span>সকল প্রিমিয়াম হাউসওয়্যার প্রোডাক্টস</span>
+                </h3>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+              {(housewareCombos.length > 0 ? housewareRegularProducts : products).map((product) => (
+                <HousewareProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
         )}
       </div>
