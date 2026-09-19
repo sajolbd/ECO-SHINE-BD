@@ -13,10 +13,10 @@ interface PageProps {
 
 async function getProduct(id: string) {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
     const res = await fetch(`${apiUrl}/api/products/${id}`, { 
       next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(3000)
+      signal: AbortSignal.timeout(4000)
     });
     if (res.ok) {
       const data = await res.json();
@@ -98,9 +98,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  return PRODUCTS_DATA.map((product) => ({
+  const staticIds = PRODUCTS_DATA.map((product) => ({
     id: product.id,
   }));
+
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
+    const res = await fetch(`${apiUrl}/api/products?limit=200`, { 
+      signal: AbortSignal.timeout(6000) 
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        const apiIds = data.products
+          .filter((p: any) => p.status !== "inactive" && p.id)
+          .map((p: any) => ({ id: String(p.id) }));
+        
+        const map = new Map<string, { id: string }>();
+        [...staticIds, ...apiIds].forEach((item) => map.set(item.id, item));
+        return Array.from(map.values());
+      }
+    }
+  } catch (err) {
+    console.log("Could not pre-fetch API products during build, using static baseline:", err);
+  }
+
+  return staticIds;
 }
 
 export default async function HousewareProductDetailPage({ params }: PageProps) {

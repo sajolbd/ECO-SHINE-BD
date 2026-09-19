@@ -44,7 +44,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
         const res = await fetch(`${apiUrl}/api/settings`);
         const data = await res.json();
         if (data.success && data.settings) {

@@ -4,7 +4,7 @@
  */
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
-  "https://backend-eco-shine-bd.vercel.app";
+  "https://eco-shine-bd-backend.vercel.app";
 
 /**
  * Normalizes image paths so uploaded blog images load from the correct active backend API.

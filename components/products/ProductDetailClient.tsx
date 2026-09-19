@@ -102,7 +102,7 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   useEffect(() => {
     const fetchRelated = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://backend-eco-shine-bd.vercel.app";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
         const response = await fetch(`${apiUrl}/api/products?categoryId=${product.categoryId}&limit=10`);
         const data = await response.json();
         if (data.success && data.products && data.products.length > 0) {
