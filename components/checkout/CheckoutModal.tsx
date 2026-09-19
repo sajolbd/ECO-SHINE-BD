@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X, ShoppingBag, Truck, CheckCircle2, ShieldCheck, MapPin, Phone, User, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { Product } from "../../data/productsData";
+import { FaWhatsapp } from "react-icons/fa";
 
 export const CheckoutModal: React.FC = () => {
   const {
@@ -24,8 +25,9 @@ export const CheckoutModal: React.FC = () => {
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
 
-  const [deliveryChargeInside, setDeliveryChargeInside] = useState(70);
+  const [deliveryChargeInside, setDeliveryChargeInside] = useState(80);
   const [deliveryChargeOutside, setDeliveryChargeOutside] = useState(130);
+  const [whatsappNumber, setWhatsappNumber] = useState("8801958058359");
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -34,8 +36,11 @@ export const CheckoutModal: React.FC = () => {
         const res = await fetch(`${apiUrl}/api/settings`);
         const data = await res.json();
         if (data.success && data.settings) {
-          setDeliveryChargeInside(data.settings.deliveryChargeInside ?? 70);
+          setDeliveryChargeInside(data.settings.deliveryChargeInside ?? 80);
           setDeliveryChargeOutside(data.settings.deliveryChargeOutside ?? 130);
+          if (data.settings.whatsapp) {
+            setWhatsappNumber(data.settings.whatsapp);
+          }
         }
       } catch {
         // Fallback
@@ -102,6 +107,45 @@ export const CheckoutModal: React.FC = () => {
       deliveryArea,
       note: note.trim(),
     });
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (cart.length === 0) return;
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const areaText = deliveryArea === "inside" ? "ঢাকার ভেতরে" : "ঢাকার বাইরে";
+    const productLines = cart
+      .map(
+        (item, idx) =>
+          `${idx + 1}. *${item.product.title}*${item.selectedColor ? ` (কালার: ${item.selectedColor})` : ""}
+   ▫️ পরিমাণ: ${item.quantity}টি
+   ▫️ মূল্য: ${item.quantity} x ${item.product.price}৳ = ${(item.quantity * item.product.price).toLocaleString("en-BD")}৳`
+      )
+      .join("\n");
+
+    const message = `🛍️ *নতুন অর্ডার রিকোয়েস্ট (Eco Shine BD)*
+━━━━━━━━━━━━━━━━━━━━
+👤 *নাম:* ${customerName.trim()}
+📞 *মোবাইল নম্বর:* ${phone.trim()}
+📍 *ঠিকানা:* ${address.trim()}
+🚚 *ডেলিভারি এরিয়া:* ${areaText}
+${note.trim() ? `📝 *বিশেষ নির্দেশনা:* ${note.trim()}\n` : ""}
+📦 *অর্ডারকৃত পণ্যসমূহ:*
+${productLines}
+━━━━━━━━━━━━━━━━━━━━
+💵 *পণ্যের মোট মূল্য:* ${subtotal.toLocaleString("en-BD")}৳
+🛵 *ডেলিভারি চার্জ:* ${deliveryFee === 0 ? "০৳ (ফ্রি ডেলিভারি)" : `${deliveryFee}৳`}
+💰 *সর্বমোট প্রদেয় টাকা:* ${totalPrice.toLocaleString("en-BD")}৳
+💳 *পেমেন্ট মেথড:* ক্যাশ অন ডেলিভারি (Cash on Delivery)
+━━━━━━━━━━━━━━━━━━━━
+অনুগ্রহ করে আমার অর্ডারটি কনফার্ম করুন। ধন্যবাদ!`;
+
+    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "");
+    const encoded = encodeURIComponent(message);
+    window.open(`https://wa.me/${cleanNumber}?text=${encoded}`, "_blank");
   };
 
   return (
@@ -413,13 +457,28 @@ export const CheckoutModal: React.FC = () => {
                           </div>
                         </div>
 
-                        <button
-                          type="submit"
-                          className="w-full py-3.5 bg-primary hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold rounded-xl transition-all text-base sm:text-lg shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <CheckCircle2 className="w-5 h-5" />
-                          <span>অর্ডার প্লেস করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
-                        </button>
+                        <div className="space-y-2.5">
+                          {/* WhatsApp Order Button */}
+                          <button
+                            type="button"
+                            onClick={handleWhatsAppOrder}
+                            disabled={cart.length === 0}
+                            className="w-full py-3 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-black rounded-xl transition-all text-base shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                          >
+                            <FaWhatsapp className="w-5 h-5 shrink-0" />
+                            <span>হোয়াটসঅ্যাপে অর্ডার করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
+                          </button>
+
+                          {/* Confirm Order Submit Button */}
+                          <button
+                            type="submit"
+                            disabled={cart.length === 0}
+                            className="w-full py-3.5 bg-primary hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold rounded-xl transition-all text-base sm:text-lg shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                          >
+                            <CheckCircle2 className="w-5 h-5" />
+                            <span>অর্ডার প্লেস করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
+                          </button>
+                        </div>
                       </div>
 
                     </form>
