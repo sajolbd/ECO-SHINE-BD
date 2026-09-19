@@ -8,7 +8,7 @@ import { FloatingCartButton } from "../../../../components/cart/FloatingCartButt
 import { SuccessModal } from "../../../../components/checkout/SuccessModal";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string } | Promise<{ id: string }>;
 }
 
 async function getProduct(id: string) {
@@ -32,8 +32,9 @@ async function getProduct(id: string) {
 
 // Generate dynamic SEO metadata for Importer BD Houseware
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const product = await getProduct(id);
+  const resolvedParams = await Promise.resolve(params);
+  const id = resolvedParams?.id;
+  const product = id ? await getProduct(id) : null;
 
   if (!product) {
     return {
@@ -127,8 +128,9 @@ export async function generateStaticParams() {
 }
 
 export default async function HousewareProductDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const product = await getProduct(id);
+  const resolvedParams = await Promise.resolve(params);
+  const id = resolvedParams?.id;
+  const product = id ? await getProduct(id) : null;
 
   if (!product) {
     notFound();
