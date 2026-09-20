@@ -1,26 +1,32 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
 
-  # 1. Serve existing files and directories directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
+# Redirect trailing slash
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
 
-  # 2. Check if clean URL has a corresponding .html file on disk (e.g., /houseware -> /houseware.html)
-  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-  RewriteRule ^(.*)$ $1.html [L]
+# 1. Check if exact .html file exists (e.g., /checkout -> /checkout.html, /products/auto-8 -> /products/auto-8.html)
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.*?)/?$ $1.html [L]
 
-  # 3. Dynamic Product Route Fallback for newly uploaded products from Dashboard
-  # If a product page does not exist on disk, internally route to dynamic viewer
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view.html?id=$1 [QSA,L]
+# 2. Dynamic Fallback for Products created from Dashboard after build
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/products/([^/]+)/?$
+RewriteRule ^products/([^/]+)/?$ /products/view.html?id=$1 [L,QSA]
 
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^products/([^/]+)/?$ /products/view.html?id=$1 [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/houseware/products/([^/]+)/?$
+RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view.html?id=$1 [L,QSA]
 
-  # 4. Custom 404 handler
-  ErrorDocument 404 /404.html
-</IfModule>
+# 3. Handle direct file/directory requests
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 4. Fallback to 404.html for all other unmatched routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ 404.html [L]
