@@ -106,7 +106,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     setIsCheckoutOpen(true);
     if (typeof window !== "undefined") {
-      router.push("/checkout");
+      window.location.href = "/checkout/";
     }
   };
 

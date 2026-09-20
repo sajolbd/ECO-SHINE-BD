@@ -151,8 +151,8 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   };
 
   const handleOrderNow = () => {
-    // Add to cart with current quantity and open checkout
-    addToCart(product, quantity);
+    // Add to cart with current quantity and selected color, then open checkout page
+    addToCart(product, quantity, selectedColor);
     openCheckout();
   };
 
