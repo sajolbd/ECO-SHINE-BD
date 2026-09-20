@@ -21,7 +21,6 @@ import { useCart } from "../../context/CartContext";
 import { SuccessModal } from "../../components/checkout/SuccessModal";
 import Footer from "../../components/layout/Footer";
 import { Product } from "../../data/productsData";
-import { FaWhatsapp } from "react-icons/fa";
 
 export default function CheckoutPage() {
   const {
@@ -158,23 +157,6 @@ ${productLines}
     const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "") || "8801958058359";
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${cleanNumber}?text=${encoded}`, "_blank");
-📝 *বিশেষ নির্দেশ (Note):* ${note.trim() || "নেই"}
-
-📦 *অর্ডারকৃত পণ্যসমূহ:*
-${itemsText}
-
-💰 *মূল্য বিবরণী:*
-• পণ্যের মোট মূল্য: ${subtotal.toLocaleString("en-BD")}৳
-• ডেলিভারি চার্জ: ${feeText}
-----------------------------------
-💵 *সর্বমোট প্রদেয় টাকা:* ${totalPrice.toLocaleString("en-BD")}৳
-----------------------------------
-অর্ডারটি নিশ্চিত করতে অনুগ্রহ করে মেসেজটি সেন্ড করুন। ধন্যবাদ!`;
-
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    const whatsappUrl = `https://wa.me/8801958058359?text=${encodedMessage}`;
-
-    window.open(whatsappUrl, "_blank");
 
     submitOrder({
       customerName: customerName.trim(),
@@ -183,7 +165,6 @@ ${itemsText}
       deliveryArea,
       note: note.trim() ? `[WhatsApp Order] ${note.trim()}` : "[WhatsApp Order]",
     });
->>>>>>> Stashed changes
   };
 
   return (
@@ -556,43 +537,26 @@ ${itemsText}
                   </div>
                 </div>
 
-<<<<<<< Updated upstream
-=======
                 {/* Order Action Buttons */}
->>>>>>> Stashed changes
                 <div className="space-y-3 pt-2">
                   {/* WhatsApp Order Button */}
                   <button
                     type="button"
                     onClick={handleWhatsAppOrder}
                     disabled={cart.length === 0}
-<<<<<<< Updated upstream
-                    className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-black rounded-2xl transition-all text-base sm:text-lg shadow-lg shadow-[#25D366]/25 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                    className="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-extrabold rounded-2xl transition-all text-base sm:text-lg shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                   >
                     <FaWhatsapp className="w-6 h-6 shrink-0" />
                     <span>হোয়াটসঅ্যাপে অর্ডার করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
                   </button>
 
-                  {/* Confirm Order Submit Button */}
-=======
-                    className="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-extrabold rounded-2xl transition-all text-base sm:text-lg shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-                  >
-                    <FaWhatsapp className="w-6 h-6" />
-                    <span>হোয়াটসঅ্যাপে অর্ডার করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
-                  </button>
-
                   {/* Standard Cash on Delivery Confirm Order Button */}
->>>>>>> Stashed changes
                   <button
                     type="submit"
                     disabled={cart.length === 0}
                     className="w-full py-4 bg-primary hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold rounded-2xl transition-all text-base sm:text-lg shadow-xl shadow-emerald-600/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
-<<<<<<< Updated upstream
                     <CheckCircle2 className="w-5 h-5 shrink-0" />
-=======
-                    <CheckCircle2 className="w-5 h-5" />
->>>>>>> Stashed changes
                     <span>অর্ডার প্লেস করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
                   </button>
                 </div>

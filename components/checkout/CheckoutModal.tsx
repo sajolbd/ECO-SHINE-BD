@@ -147,23 +147,6 @@ ${productLines}
     const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "") || "8801958058359";
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${cleanNumber}?text=${encoded}`, "_blank");
-📝 *বিশেষ নির্দেশ (Note):* ${note.trim() || "নেই"}
-
-📦 *অর্ডারকৃত পণ্যসমূহ:*
-${itemsText}
-
-💰 *মূল্য বিবরণী:*
-• পণ্যের মোট মূল্য: ${subtotal.toLocaleString("en-BD")}৳
-• ডেলিভারি চার্জ: ${feeText}
-----------------------------------
-💵 *সর্বমোট প্রদেয় টাকা:* ${totalPrice.toLocaleString("en-BD")}৳
-----------------------------------
-অর্ডারটি নিশ্চিত করতে অনুগ্রহ করে মেসেজটি সেন্ড করুন। ধন্যবাদ!`;
-
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    const whatsappUrl = `https://wa.me/8801958058359?text=${encodedMessage}`;
-
-    window.open(whatsappUrl, "_blank");
 
     submitOrder({
       customerName: customerName.trim(),
@@ -172,7 +155,6 @@ ${itemsText}
       deliveryArea,
       note: note.trim() ? `[WhatsApp Order] ${note.trim()}` : "[WhatsApp Order]",
     });
->>>>>>> Stashed changes
   };
 
   return (

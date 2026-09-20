@@ -19,6 +19,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'www.dashboard.ecoshinebd.com', port: '' },
     ],
   },
+  trailingSlash: true,
   skipTrailingSlashRedirect: true,
   async headers() {
     return [

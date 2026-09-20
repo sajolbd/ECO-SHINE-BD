@@ -2,31 +2,22 @@ Options -MultiViews
 RewriteEngine On
 RewriteBase /
 
-# Redirect trailing slash
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} (.+)/$
-RewriteRule ^ %1 [L,R=301]
-
-# 1. Check if exact .html file exists (e.g., /checkout -> /checkout.html, /products/auto-8 -> /products/auto-8.html)
-RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-RewriteRule ^(.*?)/?$ $1.html [L]
-
-# 2. Dynamic Fallback for Products created from Dashboard after build
+# 1. Dynamic Fallback for newly created products from Dashboard
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} ^/products/([^/]+)/?$
-RewriteRule ^products/([^/]+)/?$ /products/view.html?id=$1 [L,QSA]
+RewriteRule ^products/([^/]+)/?$ /products/view/index.html?id=$1 [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} ^/houseware/products/([^/]+)/?$
-RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view.html?id=$1 [L,QSA]
+RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view/index.html?id=$1 [L,QSA]
 
-# 3. Handle direct file/directory requests
+# 2. Handle direct file/directory requests
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# 4. Fallback to 404.html for all other unmatched routes
+# 3. Fallback to 404.html for all other unmatched routes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ 404.html [L]
