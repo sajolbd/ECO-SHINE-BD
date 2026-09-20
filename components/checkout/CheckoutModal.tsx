@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, ShoppingBag, Truck, CheckCircle2, ShieldCheck, MapPin, Phone, User, Plus, Minus, Trash2 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { useCart } from "../../context/CartContext";
 import { Product } from "../../data/productsData";
 import { FaWhatsapp } from "react-icons/fa";
@@ -109,14 +110,14 @@ export const CheckoutModal: React.FC = () => {
     });
   };
 
-  const handleWhatsAppOrder = () => {
+  const handleWhatsAppOrder = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (cart.length === 0) return;
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     const areaText = deliveryArea === "inside" ? "ঢাকার ভেতরে" : "ঢাকার বাইরে";
+    const feeText = hasFreeDelivery ? "০৳ (ফ্রি)" : `${deliveryFee}৳`;
+
     const productLines = cart
       .map(
         (item, idx) =>
@@ -131,21 +132,47 @@ export const CheckoutModal: React.FC = () => {
 👤 *নাম:* ${customerName.trim()}
 📞 *মোবাইল নম্বর:* ${phone.trim()}
 📍 *ঠিকানা:* ${address.trim()}
-🚚 *ডেলিভারি এরিয়া:* ${areaText}
-${note.trim() ? `📝 *বিশেষ নির্দেশনা:* ${note.trim()}\n` : ""}
+🚚 *ডেলিভারি এরিয়া:* ${areaText} (${feeText})
+${note.trim() ? `📝 *বিশেষ নির্দেশ:* ${note.trim()}\n` : ""}
 📦 *অর্ডারকৃত পণ্যসমূহ:*
 ${productLines}
 ━━━━━━━━━━━━━━━━━━━━
 💵 *পণ্যের মোট মূল্য:* ${subtotal.toLocaleString("en-BD")}৳
-🛵 *ডেলিভারি চার্জ:* ${deliveryFee === 0 ? "০৳ (ফ্রি ডেলিভারি)" : `${deliveryFee}৳`}
+🛵 *ডেলিভারি চার্জ:* ${feeText}
 💰 *সর্বমোট প্রদেয় টাকা:* ${totalPrice.toLocaleString("en-BD")}৳
 💳 *পেমেন্ট মেথড:* ক্যাশ অন ডেলিভারি (Cash on Delivery)
 ━━━━━━━━━━━━━━━━━━━━
 অনুগ্রহ করে আমার অর্ডারটি কনফার্ম করুন। ধন্যবাদ!`;
 
-    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "");
+    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "") || "8801958058359";
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${cleanNumber}?text=${encoded}`, "_blank");
+📝 *বিশেষ নির্দেশ (Note):* ${note.trim() || "নেই"}
+
+📦 *অর্ডারকৃত পণ্যসমূহ:*
+${itemsText}
+
+💰 *মূল্য বিবরণী:*
+• পণ্যের মোট মূল্য: ${subtotal.toLocaleString("en-BD")}৳
+• ডেলিভারি চার্জ: ${feeText}
+----------------------------------
+💵 *সর্বমোট প্রদেয় টাকা:* ${totalPrice.toLocaleString("en-BD")}৳
+----------------------------------
+অর্ডারটি নিশ্চিত করতে অনুগ্রহ করে মেসেজটি সেন্ড করুন। ধন্যবাদ!`;
+
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const whatsappUrl = `https://wa.me/8801958058359?text=${encodedMessage}`;
+
+    window.open(whatsappUrl, "_blank");
+
+    submitOrder({
+      customerName: customerName.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+      deliveryArea,
+      note: note.trim() ? `[WhatsApp Order] ${note.trim()}` : "[WhatsApp Order]",
+    });
+>>>>>>> Stashed changes
   };
 
   return (
@@ -457,12 +484,17 @@ ${productLines}
                           </div>
                         </div>
 
+<<<<<<< Updated upstream
                         <div className="space-y-2.5">
                           {/* WhatsApp Order Button */}
+=======
+                        <div className="space-y-2 pt-2">
+>>>>>>> Stashed changes
                           <button
                             type="button"
                             onClick={handleWhatsAppOrder}
                             disabled={cart.length === 0}
+<<<<<<< Updated upstream
                             className="w-full py-3 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-black rounded-xl transition-all text-base shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                           >
                             <FaWhatsapp className="w-5 h-5 shrink-0" />
@@ -470,6 +502,14 @@ ${productLines}
                           </button>
 
                           {/* Confirm Order Submit Button */}
+=======
+                            className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-extrabold rounded-xl transition-all text-base sm:text-lg shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                          >
+                            <FaWhatsapp className="w-5 h-5" />
+                            <span>হোয়াটসঅ্যাপে অর্ডার করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
+                          </button>
+
+>>>>>>> Stashed changes
                           <button
                             type="submit"
                             disabled={cart.length === 0}

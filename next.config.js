@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -10,6 +11,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'bayshore.nyc3.digitaloceanspaces.com' },
       { protocol: 'https', hostname: 'dashboard-sabbir-nasir.vercel.app', port: '' },
       { protocol: 'https', hostname: 'backend-sabbir-nasir.vercel.app', port: '' },
+      { protocol: 'https', hostname: 'backend-eco-shine-bd.vercel.app', port: '' },
       { protocol: 'https', hostname: 'eco-shine-bd-backend.vercel.app', port: '' },
       { protocol: 'https', hostname: 'ecoshinebd.com', port: '' },
       { protocol: 'https', hostname: 'www.ecoshinebd.com', port: '' },
