@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Product } from "../data/productsData";
+
 
 export interface CartItem {
   product: Product;
@@ -55,10 +56,35 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("ecoshine_cart");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {
+        // Fallback
+      }
+    }
+    return [];
+  });
+
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<OrderDetails | null>(null);
+
+  // Sync cart to localStorage whenever cart changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("ecoshine_cart", JSON.stringify(cart));
+      } catch (e) {
+        // Fallback
+      }
+    }
+  }, [cart]);
 
   const addToCart = (product: Product, quantity = 1, selectedColor?: string) => {
     setCart((prev) => {
@@ -93,20 +119,30 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const clearCart = () => {
     setCart([]);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem("ecoshine_cart");
+      } catch (e) {}
+    }
   };
 
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  const openCheckout = (directProduct?: Product, selectedColor?: string) => {
+  const openCheckout = (directProduct?: Product, selectedColor?: string, quantity = 1) => {
     if (directProduct) {
       const colorToUse = selectedColor || directProduct.selectedColor || (directProduct.colors && directProduct.colors[0]) || "";
-      // Set single item for direct checkout
-      setCart([{ product: directProduct, quantity: 1, selectedColor: colorToUse }]);
+      const newCart = [{ product: directProduct, quantity, selectedColor: colorToUse }];
+      setCart(newCart);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("ecoshine_cart", JSON.stringify(newCart));
+        } catch (e) {}
+      }
     }
     setIsCheckoutOpen(true);
     if (typeof window !== "undefined") {
-      window.location.href = "/checkout/";
+      router.push("/checkout/");
     }
   };
 

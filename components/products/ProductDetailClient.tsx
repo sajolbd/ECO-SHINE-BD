@@ -151,9 +151,8 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   };
 
   const handleOrderNow = () => {
-    // Add to cart with current quantity and selected color, then open checkout page
-    addToCart(product, quantity, selectedColor);
-    openCheckout();
+    // Pass product, selectedColor, and quantity directly to openCheckout for instant checkout
+    openCheckout(product, selectedColor, quantity);
   };
 
   const handleWhatsApp = () => {
