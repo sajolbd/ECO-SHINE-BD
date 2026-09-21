@@ -44,7 +44,7 @@ export const ProductGridSection: React.FC = () => {
       try {
         const response = await fetch(`${apiUrl}/api/products?limit=100`);
         const data = await response.json();
-        if (data.success && data.products && data.products.length > 0) {
+        if (data.success && Array.isArray(data.products)) {
           const activeApiProducts = data.products.filter(
             (p: Product) => p.status !== "inactive"
           );

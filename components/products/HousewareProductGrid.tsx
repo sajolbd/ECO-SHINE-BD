@@ -23,7 +23,7 @@ export const HousewareProductGrid: React.FC = () => {
         });
         clearTimeout(timeoutId);
         const data = await response.json();
-        if (data.success && data.products && data.products.length > 0) {
+        if (data.success && Array.isArray(data.products)) {
           const activeApiProducts = data.products.filter(
             (p: Product) =>
               (p.categoryId === "houseware" || p.categoryId === "homecare") &&
