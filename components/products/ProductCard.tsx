@@ -16,9 +16,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { openCheckout, addToCart } = useCart();
 
-  const activeImage = product.images[selectedImageIndex] || product.images[0];
-  const isHouseware = product.categoryId === "houseware" || product.categoryId === "homecare";
-  const productUrl = isHouseware ? `/houseware/products/${product.id}` : `/products/${product.id}`;
+  const imagesList = Array.isArray(product?.images) && product.images.length > 0
+    ? product.images
+    : ["/images/products/product-1.jpeg"];
+  const activeImage = imagesList[selectedImageIndex] || imagesList[0] || "/images/products/product-1.jpeg";
+  const price = typeof product?.price === "number" ? product.price : 0;
+  const phone = product?.phone || "01958-058359";
+  const whatsapp = product?.whatsapp || "8801958058359";
+
+  const isHouseware = product?.categoryId === "houseware" || product?.categoryId === "homecare";
+  const productUrl = isHouseware ? `/houseware/products/${product?.id}` : `/products/${product?.id}`;
 
   const handleOrderNow = () => {
     openCheckout(product);
@@ -26,13 +33,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleWhatsApp = () => {
     const text = encodeURIComponent(
-      `হ্যালো, আমি "${product.title}" (মূল্য: ${product.price}৳) অর্ডার করতে চাই।`
+      `হ্যালো, আমি "${product?.title || "প্রোডাক্ট"}" (মূল্য: ${price}৳) অর্ডার করতে চাই।`
     );
-    window.open(`https://wa.me/${product.whatsapp}?text=${text}`, "_blank");
+    window.open(`https://wa.me/${whatsapp}?text=${text}`, "_blank");
   };
 
   const handlePhoneCall = () => {
-    window.location.href = `tel:${product.phone}`;
+    window.location.href = `tel:${phone}`;
   };
 
   return (

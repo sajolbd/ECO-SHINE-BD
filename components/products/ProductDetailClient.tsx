@@ -93,8 +93,12 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   const [newReviewRating, setNewReviewRating] = useState(5);
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
 
+  const imagesList = Array.isArray(product?.images) && product.images.length > 0
+    ? product.images
+    : ["/images/products/product-1.jpeg"];
+
   const activeImage =
-    product.images[selectedImageIndex] || product.images[0] || "/images/products/product-1.jpeg";
+    imagesList[selectedImageIndex] || imagesList[0] || "/images/products/product-1.jpeg";
 
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
@@ -308,9 +312,9 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
             </div>
 
             {/* Thumbnails Gallery Strip */}
-            {product.images.length > 1 && (
+            {imagesList.length > 1 && (
               <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin">
-                {product.images.map((img, idx) => (
+                {imagesList.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
