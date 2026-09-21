@@ -62,7 +62,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const saved = localStorage.getItem("ecoshine_cart");
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.filter(
+              (item: any) =>
+                item &&
+                item.product &&
+                typeof item.product.id === "string" &&
+                typeof item.product.price === "number"
+            );
+          }
         }
       } catch (e) {
         // Fallback
@@ -87,10 +95,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [cart]);
 
   const addToCart = (product: Product, quantity = 1, selectedColor?: string) => {
+    if (!product || !product.id) return;
     setCart((prev) => {
       const colorToUse = selectedColor || product.selectedColor || (product.colors && product.colors[0]) || "";
       const existingIndex = prev.findIndex(
-        (item) => item.product.id === product.id && item.selectedColor === colorToUse
+        (item) => item?.product?.id === product.id && item?.selectedColor === colorToUse
       );
       if (existingIndex > -1) {
         const updated = [...prev];
@@ -102,7 +111,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const removeFromCart = (productId: string) => {
-    setCart((prev) => prev.filter((item) => item.product.id !== productId));
+    setCart((prev) => prev.filter((item) => item?.product?.id !== productId));
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -112,7 +121,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     setCart((prev) =>
       prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item?.product?.id === productId ? { ...item, quantity } : item
       )
     );
   };
@@ -126,8 +135,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const totalCount = cart.reduce((sum, item) => sum + (item?.quantity || 1), 0);
+  const subtotal = cart.reduce(
+    (sum, item) =>
+      sum + (typeof item?.product?.price === "number" ? item.product.price : 0) * (item?.quantity || 1),
+    0
+  );
 
   const openCheckout = (directProduct?: Product, selectedColor?: string, quantity = 1) => {
     if (directProduct) {
