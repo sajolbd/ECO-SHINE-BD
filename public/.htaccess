@@ -1,8 +1,17 @@
-Options -MultiViews
+Options -MultiViews -Indexes
 RewriteEngine On
 RewriteBase /
 
-# 1. Dynamic Fallback for newly created products from Dashboard
+# 1. NEVER rewrite _next or static assets (css, js, images, fonts)
+RewriteRule ^_next/ - [L]
+RewriteRule \.(css|js|png|jpg|jpeg|gif|ico|svg|json|woff2|woff|ttf)$ - [L]
+
+# 2. Handle direct existing files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 3. Dynamic Fallback for newly created products from Dashboard
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} ^/products/([^/]+)/?$
@@ -13,11 +22,14 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} ^/houseware/products/([^/]+)/?$
 RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view/index.html?id=$1 [L,QSA]
 
-# 2. Handle direct file/directory requests
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
+# 4. Check if folder/index.html exists (e.g. /houseware -> /houseware/index.html)
+RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+RewriteRule ^(.*)$ /$1/index.html [L]
 
-# 3. Fallback to 404.html for all other unmatched routes
+# 5. Check if page.html exists
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.*)$ /$1.html [L]
+
+# 6. Fallback to 404.html for all other unmatched routes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ 404.html [L]
