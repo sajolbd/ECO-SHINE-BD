@@ -55,31 +55,7 @@ export const CATEGORIES: CategoryTab[] = [
   { id: "houseware", name: "Houseware", iconName: "Home" },
 ];
 
-const DEFAULT_PHONE = "01958-058359";
-const DEFAULT_WHATSAPP = "8801958058359";
-
-export const PRODUCTS_DATA: Product[] = [
-  {
-    id: "auto-1",
-    title: "বাবল বস কালার গার্ড ফোমিং জেল (৫৫০ মিলি)",
-    category: "Cleaning products",
-    categoryId: "cleaning-products",
-    price: 350,
-    originalPrice: 450,
-    rating: 4.9,
-    reviewsCount: 640,
-    images: [
-      "/images/products/product-7.jpeg",
-      "/images/products/product-5.jpeg",
-      "/images/products/product-8.jpeg",
-    ],
-    phone: DEFAULT_PHONE,
-    whatsapp: DEFAULT_WHATSAPP,
-    unit: "৫৫০ মিলি (সাথে ১টি ফ্রি মাইক্রোফাইবার টাওয়েল)",
-    badge: "হট ডিল",
-    description: "আপনার প্রিয় গাড়ির পেইন্ট সুরক্ষা ও চকচকে ফোম ওয়াশের জন্য সেরা বাবল বস কালার গার্ড ফোমিং জেল।",
-  },
-];
+export const PRODUCTS_DATA: Product[] = [];
 
 export function getProductById(id: string): Product | undefined {
   const rawProduct = PRODUCTS_DATA.find((p) => p.id === id);
@@ -198,4 +174,3 @@ export function getRelatedProducts(currentId: string, categoryId: string, limit 
     (p) => p.id !== currentId && p.categoryId === categoryId
   ).slice(0, limit);
 }
-

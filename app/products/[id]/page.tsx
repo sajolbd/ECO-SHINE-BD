@@ -104,6 +104,8 @@ export async function generateStaticParams() {
     id: product.id,
   }));
 
+  let result = staticIds;
+
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
     const res = await fetch(`${apiUrl}/api/products?limit=200`, { 
@@ -111,21 +113,25 @@ export async function generateStaticParams() {
     });
     if (res.ok) {
       const data = await res.json();
-      if (data.success && Array.isArray(data.products)) {
+      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
         const apiIds = data.products
           .filter((p: any) => p.status !== "inactive" && p.id)
           .map((p: any) => ({ id: String(p.id) }));
         
         const map = new Map<string, { id: string }>();
         [...staticIds, ...apiIds].forEach((item) => map.set(item.id, item));
-        return Array.from(map.values());
+        result = Array.from(map.values());
       }
     }
   } catch (err) {
     console.log("Could not pre-fetch API products during build, using static baseline:", err);
   }
 
-  return staticIds;
+  if (!result || result.length === 0) {
+    return [{ id: "view" }];
+  }
+
+  return result;
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
