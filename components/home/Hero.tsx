@@ -162,8 +162,8 @@ export const Hero: React.FC = () => {
             category: b.subtitle || "",
             rating: "5.0",
             reviews: b.ctaText || "Eco Shine",
-            image: b.imageDesktop,
-            mobileImage: b.imageMobile,
+            image: b.imageDesktop && b.imageDesktop.trim() !== "" ? b.imageDesktop : "/images/products/product-1.jpeg",
+            mobileImage: b.imageMobile && b.imageMobile.trim() !== "" ? b.imageMobile : (b.imageDesktop || "/images/products/product-1.jpeg"),
             url: b.url || "/#products",
             badge: b.ctaText,
         }));

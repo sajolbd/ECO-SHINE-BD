@@ -85,11 +85,12 @@ export const ProductGridSection: React.FC = () => {
         {(() => {
           const comboProducts = products.filter(
             (p) =>
-              p.isCombo ||
+              p &&
+              (p.isCombo ||
               p.categoryId === "combo-packs" ||
               p.badge?.includes("কম্বো") ||
               p.unit?.includes("কম্বো") ||
-              p.title.includes("কম্বো")
+              p.title?.includes("কম্বো"))
           );
 
           if (comboProducts.length === 0) return null;
@@ -131,6 +132,7 @@ export const ProductGridSection: React.FC = () => {
 
           products.forEach((p) => {
             if (
+              p &&
               p.categoryId &&
               p.categoryId !== "houseware" &&
               p.categoryId !== "homecare" &&
@@ -151,7 +153,7 @@ export const ProductGridSection: React.FC = () => {
             .filter((cat) => cat.slug !== "houseware" && cat.slug !== "homecare" && cat.slug !== "combo-packs")
             .map((cat, idx) => {
               const categoryProducts = products.filter(
-                (p) => p.categoryId === cat.slug && !p.isCombo && !p.badge?.includes("কম্বো") && !p.unit?.includes("কম্বো") && !p.title.includes("কম্বো")
+                (p) => p && p.categoryId === cat.slug && !p.isCombo && !p.badge?.includes("কম্বো") && !p.unit?.includes("কম্বো") && !p.title?.includes("কম্বো")
               );
 
               if (categoryProducts.length === 0) return null;
