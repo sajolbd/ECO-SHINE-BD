@@ -25,7 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const whatsapp = product?.whatsapp || "8801958058359";
 
   const isHouseware = product?.categoryId === "houseware" || product?.categoryId === "homecare";
-  const productUrl = isHouseware ? `/houseware/products/${product?.id}` : `/products/${product?.id}`;
+  const productUrl = isHouseware ? `/houseware/products/view?id=${product?.id}` : `/products/view?id=${product?.id}`;
 
   const handleOrderNow = () => {
     openCheckout(product);

@@ -12,15 +12,28 @@ const NotFound = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
+      const search = window.location.search;
+      const urlParams = new URLSearchParams(search);
+      const queryId = urlParams.get("id");
 
-      // Check if it's a product link like /products/auto-sajol-937
-      if (path.includes("/products/")) {
+      if (queryId) {
+        setRedirecting(true);
+        const isHouseware = path.includes("/houseware/");
+        const target = isHouseware
+          ? `/houseware/products/view?id=${encodeURIComponent(queryId)}`
+          : `/products/view?id=${encodeURIComponent(queryId)}`;
+        router.replace(target);
+        return;
+      }
+
+      // Check if it's a product link like /products/auto-sajol-937 or /products/view
+      if (path.includes("/products")) {
         const parts = path.split("/").filter(Boolean);
         const lastPart = parts[parts.length - 1];
 
         if (lastPart && lastPart !== "view" && lastPart !== "view.html") {
           setRedirecting(true);
-          const isHouseware = path.includes("/houseware/");
+          const isHouseware = path.includes("/houseware");
           const target = isHouseware
             ? `/houseware/products/view?id=${encodeURIComponent(lastPart)}`
             : `/products/view?id=${encodeURIComponent(lastPart)}`;
