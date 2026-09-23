@@ -6,7 +6,6 @@ import { X, ShoppingBag, Truck, CheckCircle2, ShieldCheck, MapPin, Phone, User, 
 import { FaWhatsapp } from "react-icons/fa";
 import { useCart } from "../../context/CartContext";
 import { Product } from "../../data/productsData";
-import { FaWhatsapp } from "react-icons/fa";
 
 export const CheckoutModal: React.FC = () => {
   const {
@@ -466,32 +465,19 @@ ${productLines}
                           </div>
                         </div>
 
-<<<<<<< Updated upstream
                         <div className="space-y-2.5">
                           {/* WhatsApp Order Button */}
-=======
-                        <div className="space-y-2 pt-2">
->>>>>>> Stashed changes
                           <button
                             type="button"
                             onClick={handleWhatsAppOrder}
                             disabled={cart.length === 0}
-<<<<<<< Updated upstream
-                            className="w-full py-3 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-black rounded-xl transition-all text-base shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                            className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-black rounded-xl transition-all text-base shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                           >
                             <FaWhatsapp className="w-5 h-5 shrink-0" />
                             <span>হোয়াটসঅ্যাপে অর্ডার করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
                           </button>
 
                           {/* Confirm Order Submit Button */}
-=======
-                            className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white font-extrabold rounded-xl transition-all text-base sm:text-lg shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                          >
-                            <FaWhatsapp className="w-5 h-5" />
-                            <span>হোয়াটসঅ্যাপে অর্ডার করুন ({totalPrice.toLocaleString("en-BD")}৳)</span>
-                          </button>
-
->>>>>>> Stashed changes
                           <button
                             type="submit"
                             disabled={cart.length === 0}

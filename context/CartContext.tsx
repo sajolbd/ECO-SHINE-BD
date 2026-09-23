@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Product } from "../data/productsData";
+import { trackAddToCart, trackInitiateCheckout, trackPurchase } from "../lib/pixel";
 
 
 export interface CartItem {
@@ -36,7 +37,7 @@ interface CartContextType {
   
   // Checkout Modal State
   isCheckoutOpen: boolean;
-  openCheckout: (directProduct?: Product, selectedColor?: string) => void;
+  openCheckout: (directProduct?: Product, selectedColor?: string, quantity?: number) => void;
   closeCheckout: () => void;
   
   // Order Success State
@@ -96,6 +97,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addToCart = (product: Product, quantity = 1, selectedColor?: string) => {
     if (!product || !product.id) return;
+    trackAddToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      quantity,
+    });
     setCart((prev) => {
       const colorToUse = selectedColor || product.selectedColor || (product.colors && product.colors[0]) || "";
       const existingIndex = prev.findIndex(
@@ -143,9 +150,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 
   const openCheckout = (directProduct?: Product, selectedColor?: string, quantity = 1) => {
+    let currentCart = cart;
     if (directProduct) {
       const colorToUse = selectedColor || directProduct.selectedColor || (directProduct.colors && directProduct.colors[0]) || "";
       const newCart = [{ product: directProduct, quantity, selectedColor: colorToUse }];
+      currentCart = newCart;
       setCart(newCart);
       if (typeof window !== "undefined") {
         try {
@@ -153,6 +162,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } catch (e) {}
       }
     }
+    const currentSubtotal = currentCart.reduce(
+      (sum, item) =>
+        sum + (typeof item?.product?.price === "number" ? item.product.price : 0) * (item?.quantity || 1),
+      0
+    );
+    trackInitiateCheckout(currentCart, currentSubtotal);
     setIsCheckoutOpen(true);
     if (typeof window !== "undefined") {
       router.push("/checkout/");
@@ -216,6 +231,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           paymentMethod: order.paymentMethod,
           date: order.dateString,
         };
+
+        // Fire Facebook Pixel & CAPI Purchase Event
+        trackPurchase({
+          orderId: order.orderId,
+          total: order.total,
+          items: [...cart],
+          phone: order.phone,
+          customerName: order.customerName,
+        });
 
         setPlacedOrder(newOrder);
         setIsCheckoutOpen(false);

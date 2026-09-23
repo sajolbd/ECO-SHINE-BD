@@ -26,6 +26,7 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import { Product, getRelatedProducts } from "../../data/productsData";
 import { useCart } from "../../context/CartContext";
+import { trackViewContent } from "../../lib/pixel";
 import { ProductCard } from "./ProductCard";
 import { HousewareProductCard } from "./HousewareProductCard";
 
@@ -101,6 +102,18 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
     imagesList[selectedImageIndex] || imagesList[0] || "/images/products/product-1.jpeg";
 
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+  // Trigger Facebook Pixel ViewContent Event
+  useEffect(() => {
+    if (product && product.id) {
+      trackViewContent({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        category: product.category,
+      });
+    }
+  }, [product]);
 
   // Fetch related products from API with static fallback
   useEffect(() => {

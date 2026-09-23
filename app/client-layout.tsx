@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SiteAnimations from "components/layout/SiteAnimations";
+import FacebookPixel from "components/FacebookPixel";
 
 export default function ClientLayout({
   children,
@@ -23,6 +24,7 @@ export default function ClientLayout({
 
   return (
     <main ref={contentRef} className="site-animated-content">
+      <FacebookPixel />
       {children}
       <SiteAnimations rootRef={contentRef} />
     </main>
