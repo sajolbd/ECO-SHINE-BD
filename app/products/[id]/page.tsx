@@ -98,8 +98,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export const dynamicParams = true;
-
 // Pre-render static params for all products (including live database products)
 export async function generateStaticParams() {
   const staticIds = PRODUCTS_DATA.map((product) => ({
