@@ -15,8 +15,8 @@ async function getProduct(id: string) {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
     const res = await fetch(`${apiUrl}/api/products/${id}`, { 
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(4000)
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000)
     });
     if (res.ok) {
       const data = await res.json();
@@ -97,6 +97,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
   };
 }
+
+export const dynamicParams = true;
 
 // Pre-render static params for all products (including live database products)
 export async function generateStaticParams() {
