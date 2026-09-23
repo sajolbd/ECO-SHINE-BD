@@ -22,13 +22,19 @@ function DynamicHousewareProductContent() {
     let productId = searchParams?.get("id") || "";
 
     if (!productId && typeof window !== "undefined") {
-      const parts = window.location.pathname.split("/").filter(Boolean);
-      const lastPart = parts[parts.length - 1];
-      if (lastPart && lastPart !== "view" && lastPart !== "view.html") {
-        productId = lastPart;
-      } else if (window.location.search) {
+      // 1. Try URL Query Parameter (?id=...)
+      if (window.location.search) {
         const urlParams = new URLSearchParams(window.location.search);
         productId = urlParams.get("id") || "";
+      }
+
+      // 2. If still no productId, try last pathname segment (/houseware/products/slug)
+      if (!productId) {
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        const lastPart = parts[parts.length - 1];
+        if (lastPart && lastPart !== "view" && lastPart !== "view.html" && lastPart !== "products") {
+          productId = lastPart;
+        }
       }
     }
 
