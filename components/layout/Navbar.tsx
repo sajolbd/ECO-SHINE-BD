@@ -32,11 +32,11 @@ function getCategoryHref(slug: string): string {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
   const [categories, setCategories] = useState<Category[]>(STATIC_CATEGORIES);
 
   // Detect if we are on the Houseware page or houseware product detail page → orange theme
-  const isHouseware = pathname.startsWith("/houseware");
+  const isHouseware = Boolean(pathname && pathname.startsWith("/houseware"));
 
   useEffect(() => {
     const fetchCategories = async () => {

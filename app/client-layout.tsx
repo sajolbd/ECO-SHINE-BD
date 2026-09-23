@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SiteAnimations from "components/layout/SiteAnimations";
@@ -24,7 +24,9 @@ export default function ClientLayout({
 
   return (
     <main ref={contentRef} className="site-animated-content">
-      <FacebookPixel />
+      <Suspense fallback={null}>
+        <FacebookPixel />
+      </Suspense>
       {children}
       <SiteAnimations rootRef={contentRef} />
     </main>

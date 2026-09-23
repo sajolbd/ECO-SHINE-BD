@@ -57,19 +57,24 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
-  const [cart, setCart] = useState<CartItem[]>(() => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Load cart from localStorage on client mount to avoid hydration mismatch
+  useEffect(() => {
     if (typeof window !== "undefined") {
       try {
         const saved = localStorage.getItem("ecoshine_cart");
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.filter(
-              (item: any) =>
-                item &&
-                item.product &&
-                typeof item.product.id === "string" &&
-                typeof item.product.price === "number"
+            setCart(
+              parsed.filter(
+                (item: any) =>
+                  item &&
+                  item.product &&
+                  typeof item.product.id === "string" &&
+                  typeof item.product.price === "number"
+              )
             );
           }
         }
@@ -77,8 +82,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Fallback
       }
     }
-    return [];
-  });
+  }, []);
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);

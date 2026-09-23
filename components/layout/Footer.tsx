@@ -61,8 +61,8 @@ const socialLinks = [
 ];
 
 export default function Footer() {
-  const pathname = usePathname();
-  const isHouseware = pathname?.startsWith("/houseware");
+  const pathname = usePathname() || "";
+  const isHouseware = Boolean(pathname && pathname.startsWith("/houseware"));
 
   const housewareQuickLinks = [
     { label: "Houseware হোম পেজ", href: "/houseware" },
