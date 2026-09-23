@@ -1,52 +1,32 @@
-Options -MultiViews -Indexes
 DirectoryIndex index.html
 
-RewriteEngine On
-RewriteBase /
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
 
-# ----------------------------------------------------------------------
-# 1. NEVER REWRITE _next OR STATIC ASSETS (CSS, JS, IMAGES, FONTS, MEDIA)
-# ----------------------------------------------------------------------
-RewriteRule ^_next/ - [L]
-RewriteRule \.(css|js|png|jpg|jpeg|gif|ico|svg|json|woff2|woff|ttf|eot|otf|webp|map)$ - [L]
+  # 1. Direct access to existing static files and directories (CSS, JS, images, _next)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
 
-# ----------------------------------------------------------------------
-# 2. DYNAMIC PRODUCT ROUTING (/products/SLUG EXCEPT /products/view)
-# ----------------------------------------------------------------------
-RewriteCond %{REQUEST_URI} !^/products/view/?$
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} ^/products/([^/]+)/?$
-RewriteRule ^products/([^/]+)/?$ /products/view/index.html?id=$1 [L,QSA]
+  # 2. Dynamic Product View Routing (/products/SLUG -> /products/view/index.html?id=SLUG)
+  RewriteCond %{REQUEST_URI} !^/products/view/?$
+  RewriteCond %{REQUEST_URI} ^/products/([^/]+)/?$
+  RewriteRule ^products/([^/]+)/?$ /products/view/index.html?id=$1 [L,QSA]
 
-RewriteCond %{REQUEST_URI} !^/houseware/products/view/?$
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} ^/houseware/products/([^/]+)/?$
-RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view/index.html?id=$1 [L,QSA]
+  RewriteCond %{REQUEST_URI} !^/houseware/products/view/?$
+  RewriteCond %{REQUEST_URI} ^/houseware/products/([^/]+)/?$
+  RewriteRule ^houseware/products/([^/]+)/?$ /houseware/products/view/index.html?id=$1 [L,QSA]
 
-# ----------------------------------------------------------------------
-# 3. EXISTING FILES AND DIRECTORIES
-# ----------------------------------------------------------------------
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^ - [L]
+  # 3. Folder Index & Clean Page Rewrites
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^(.*)$ /$1/index.html [L,QSA]
 
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteCond %{REQUEST_FILENAME}/index.html -f
-RewriteRule ^ - [L]
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.*)$ /$1.html [L,QSA]
 
-# ----------------------------------------------------------------------
-# 4. FOLDER INDEX & PAGE REWRITES (Preserving Query Strings)
-# ----------------------------------------------------------------------
-RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
-RewriteRule ^(.*)$ /$1/index.html [L,QSA]
-
-RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-RewriteRule ^(.*)$ /$1.html [L,QSA]
-
-# ----------------------------------------------------------------------
-# 5. SPA FALLBACK FOR UNMATCHED ROUTES
-# ----------------------------------------------------------------------
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ 404.html [L]
+  # 4. Fallback for unmatched routes
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ 404.html [L]
+</IfModule>
