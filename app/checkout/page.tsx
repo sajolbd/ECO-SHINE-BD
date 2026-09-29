@@ -50,61 +50,65 @@ export default function CheckoutPage() {
   useEffect(() => {
     const loadProductFromUrl = async () => {
       if (typeof window === "undefined") return;
-      const urlParams = new URLSearchParams(window.location.search);
-      const productId = urlParams.get("product") || urlParams.get("id") || urlParams.get("buy");
-      const itemsParam = urlParams.get("items");
-      const qtyParam = parseInt(urlParams.get("qty") || "1", 10) || 1;
-      const colorParam = urlParams.get("color") || undefined;
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get("product") || urlParams.get("id") || urlParams.get("buy");
+        const itemsParam = urlParams.get("items");
+        const qtyParam = parseInt(urlParams.get("qty") || "1", 10) || 1;
+        const colorParam = urlParams.get("color") || undefined;
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
 
-      if (itemsParam && cart.length === 0) {
-        setIsLoadingUrlProduct(true);
-        try {
-          const itemTokens = itemsParam.split(",");
-          for (const token of itemTokens) {
-            const [pId, pQty, pColor] = token.split(":");
-            if (pId) {
-              let prod: Product | null = null;
-              try {
-                const res = await fetch(`${apiUrl}/api/products/${pId}`);
-                if (res.ok) {
-                  const data = await res.json();
-                  if (data.success && data.product) prod = data.product;
+        if (itemsParam && cart.length === 0) {
+          setIsLoadingUrlProduct(true);
+          try {
+            const itemTokens = itemsParam.split(",");
+            for (const token of itemTokens) {
+              const [pId, pQty, pColor] = token.split(":");
+              if (pId) {
+                let prod: Product | null = null;
+                try {
+                  const res = await fetch(`${apiUrl}/api/products/${pId}`);
+                  if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.product) prod = data.product;
+                  }
+                } catch {}
+                if (!prod) prod = getProductById(pId) || null;
+                if (prod) {
+                  addToCart(prod, parseInt(pQty || "1", 10) || 1, pColor || undefined);
                 }
-              } catch {}
-              if (!prod) prod = getProductById(pId) || null;
-              if (prod) {
-                addToCart(prod, parseInt(pQty || "1", 10) || 1, pColor || undefined);
               }
             }
+          } finally {
+            setIsLoadingUrlProduct(false);
           }
-        } finally {
-          setIsLoadingUrlProduct(false);
+          return;
         }
-        return;
-      }
 
-      if (productId) {
-        const alreadyInCart = cart.some((item) => item.product.id === productId);
-        if (!alreadyInCart && cart.length === 0) {
-          setIsLoadingUrlProduct(true);
-          let prod: Product | null = null;
-          try {
-            const res = await fetch(`${apiUrl}/api/products/${productId}`);
-            if (res.ok) {
-              const data = await res.json();
-              if (data.success && data.product) prod = data.product;
+        if (productId) {
+          const alreadyInCart = cart.some((item) => item?.product?.id === productId);
+          if (!alreadyInCart && cart.length === 0) {
+            setIsLoadingUrlProduct(true);
+            let prod: Product | null = null;
+            try {
+              const res = await fetch(`${apiUrl}/api/products/${productId}`);
+              if (res.ok) {
+                const data = await res.json();
+                if (data.success && data.product) prod = data.product;
+              }
+            } catch {}
+            if (!prod) {
+              prod = getProductById(productId) || null;
             }
-          } catch {}
-          if (!prod) {
-            prod = getProductById(productId) || null;
+            if (prod) {
+              addToCart(prod, qtyParam, colorParam);
+            }
+            setIsLoadingUrlProduct(false);
           }
-          if (prod) {
-            addToCart(prod, qtyParam, colorParam);
-          }
-          setIsLoadingUrlProduct(false);
         }
+      } catch (err) {
+        setIsLoadingUrlProduct(false);
       }
     };
 
@@ -114,33 +118,36 @@ export default function CheckoutPage() {
   // 2. Continuously sync browser URL address bar with current cart state
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (cart.length > 0) {
-      const firstItem = cart[0];
-      const currentParams = new URLSearchParams(window.location.search);
-      const currentProductId = currentParams.get("product") || currentParams.get("id") || currentParams.get("buy");
-      const currentQty = currentParams.get("qty");
-      const currentColor = currentParams.get("color");
+    try {
+      const validItems = cart.filter((item) => item && item.product && item.product.id);
+      if (validItems.length > 0) {
+        const firstItem = validItems[0];
+        const currentParams = new URLSearchParams(window.location.search);
+        const currentProductId = currentParams.get("product") || currentParams.get("id") || currentParams.get("buy");
+        const currentQty = currentParams.get("qty");
+        const currentColor = currentParams.get("color");
 
-      const newQty = firstItem.quantity > 1 ? firstItem.quantity.toString() : null;
-      const newColor = firstItem.selectedColor || null;
+        const newQty = firstItem.quantity > 1 ? firstItem.quantity.toString() : null;
+        const newColor = firstItem.selectedColor || null;
 
-      if (
-        currentProductId !== firstItem.product.id ||
-        currentQty !== newQty ||
-        currentColor !== newColor
-      ) {
-        const params = new URLSearchParams();
-        params.set("product", firstItem.product.id);
-        if (firstItem.quantity > 1) {
-          params.set("qty", firstItem.quantity.toString());
+        if (
+          currentProductId !== firstItem.product.id ||
+          currentQty !== newQty ||
+          currentColor !== newColor
+        ) {
+          const params = new URLSearchParams();
+          params.set("product", firstItem.product.id);
+          if (firstItem.quantity > 1) {
+            params.set("qty", firstItem.quantity.toString());
+          }
+          if (firstItem.selectedColor) {
+            params.set("color", firstItem.selectedColor);
+          }
+          const newUrl = `${window.location.pathname}?${params.toString()}`;
+          window.history.replaceState(null, "", newUrl);
         }
-        if (firstItem.selectedColor) {
-          params.set("color", firstItem.selectedColor);
-        }
-        const newUrl = `${window.location.pathname}?${params.toString()}`;
-        window.history.replaceState(null, "", newUrl);
       }
-    }
+    } catch (e) {}
   }, [cart]);
 
   useEffect(() => {
