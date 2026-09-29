@@ -155,6 +155,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const openCheckout = (directProduct?: Product, selectedColor?: string, quantity = 1) => {
     let currentCart = cart;
+    let targetProduct = directProduct;
     if (directProduct) {
       const colorToUse = selectedColor || directProduct.selectedColor || (directProduct.colors && directProduct.colors[0]) || "";
       const newCart = [{ product: directProduct, quantity, selectedColor: colorToUse }];
@@ -165,7 +166,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           localStorage.setItem("ecoshine_cart", JSON.stringify(newCart));
         } catch (e) {}
       }
+    } else if (cart.length > 0) {
+      targetProduct = cart[0].product;
     }
+
     const currentSubtotal = currentCart.reduce(
       (sum, item) =>
         sum + (typeof item?.product?.price === "number" ? item.product.price : 0) * (item?.quantity || 1),
@@ -173,8 +177,19 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
     trackInitiateCheckout(currentCart, currentSubtotal);
     setIsCheckoutOpen(true);
+
     if (typeof window !== "undefined") {
-      router.push("/checkout/");
+      if (targetProduct) {
+        const queryParams = new URLSearchParams();
+        queryParams.set("product", targetProduct.id);
+        const qty = directProduct ? quantity : (cart[0]?.quantity || 1);
+        if (qty > 1) queryParams.set("qty", qty.toString());
+        const color = selectedColor || (cart[0]?.selectedColor);
+        if (color) queryParams.set("color", color);
+        router.push(`/checkout/?${queryParams.toString()}`);
+      } else {
+        router.push("/checkout/");
+      }
     }
   };
 

@@ -17,15 +17,17 @@ import {
   Sparkles,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { SuccessModal } from "../../components/checkout/SuccessModal";
 import Footer from "../../components/layout/Footer";
-import { Product } from "../../data/productsData";
+import { Product, getProductById } from "../../data/productsData";
 
 export default function CheckoutPage() {
   const {
     cart,
     subtotal,
+    addToCart,
     updateQuantity,
     removeFromCart,
     submitOrder,
@@ -42,6 +44,104 @@ export default function CheckoutPage() {
   const [deliveryChargeInside, setDeliveryChargeInside] = useState(80);
   const [deliveryChargeOutside, setDeliveryChargeOutside] = useState(130);
   const [whatsappNumber, setWhatsappNumber] = useState("8801958058359");
+  const [isLoadingUrlProduct, setIsLoadingUrlProduct] = useState(false);
+
+  // 1. Hydrate cart from URL search parameters (e.g. ?product=id or ?id=id or ?buy=id or ?items=...)
+  useEffect(() => {
+    const loadProductFromUrl = async () => {
+      if (typeof window === "undefined") return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get("product") || urlParams.get("id") || urlParams.get("buy");
+      const itemsParam = urlParams.get("items");
+      const qtyParam = parseInt(urlParams.get("qty") || "1", 10) || 1;
+      const colorParam = urlParams.get("color") || undefined;
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://eco-shine-bd-backend.vercel.app";
+
+      if (itemsParam && cart.length === 0) {
+        setIsLoadingUrlProduct(true);
+        try {
+          const itemTokens = itemsParam.split(",");
+          for (const token of itemTokens) {
+            const [pId, pQty, pColor] = token.split(":");
+            if (pId) {
+              let prod: Product | null = null;
+              try {
+                const res = await fetch(`${apiUrl}/api/products/${pId}`);
+                if (res.ok) {
+                  const data = await res.json();
+                  if (data.success && data.product) prod = data.product;
+                }
+              } catch {}
+              if (!prod) prod = getProductById(pId) || null;
+              if (prod) {
+                addToCart(prod, parseInt(pQty || "1", 10) || 1, pColor || undefined);
+              }
+            }
+          }
+        } finally {
+          setIsLoadingUrlProduct(false);
+        }
+        return;
+      }
+
+      if (productId) {
+        const alreadyInCart = cart.some((item) => item.product.id === productId);
+        if (!alreadyInCart && cart.length === 0) {
+          setIsLoadingUrlProduct(true);
+          let prod: Product | null = null;
+          try {
+            const res = await fetch(`${apiUrl}/api/products/${productId}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.product) prod = data.product;
+            }
+          } catch {}
+          if (!prod) {
+            prod = getProductById(productId) || null;
+          }
+          if (prod) {
+            addToCart(prod, qtyParam, colorParam);
+          }
+          setIsLoadingUrlProduct(false);
+        }
+      }
+    };
+
+    loadProductFromUrl();
+  }, []);
+
+  // 2. Continuously sync browser URL address bar with current cart state
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (cart.length > 0) {
+      const firstItem = cart[0];
+      const currentParams = new URLSearchParams(window.location.search);
+      const currentProductId = currentParams.get("product") || currentParams.get("id") || currentParams.get("buy");
+      const currentQty = currentParams.get("qty");
+      const currentColor = currentParams.get("color");
+
+      const newQty = firstItem.quantity > 1 ? firstItem.quantity.toString() : null;
+      const newColor = firstItem.selectedColor || null;
+
+      if (
+        currentProductId !== firstItem.product.id ||
+        currentQty !== newQty ||
+        currentColor !== newColor
+      ) {
+        const params = new URLSearchParams();
+        params.set("product", firstItem.product.id);
+        if (firstItem.quantity > 1) {
+          params.set("qty", firstItem.quantity.toString());
+        }
+        if (firstItem.selectedColor) {
+          params.set("color", firstItem.selectedColor);
+        }
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState(null, "", newUrl);
+      }
+    }
+  }, [cart]);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -215,7 +315,14 @@ ${productLines}
           </p>
         </div>
 
-        {cart.length === 0 ? (
+        {isLoadingUrlProduct ? (
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-sm flex flex-col items-center">
+            <Loader2 className="w-10 h-10 animate-spin text-primary" />
+            <p className="text-base font-bold text-slate-800">
+              আপনার পণ্য লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...
+            </p>
+          </div>
+        ) : cart.length === 0 ? (
           /* Empty Cart State */
           <div className="bg-white border border-slate-200/80 rounded-3xl p-10 text-center max-w-lg mx-auto space-y-5 shadow-sm">
             <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400 border border-slate-200">
