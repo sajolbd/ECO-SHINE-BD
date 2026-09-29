@@ -28,6 +28,7 @@ export default function CheckoutPage() {
     cart,
     subtotal,
     addToCart,
+    setDirectCart,
     updateQuantity,
     removeFromCart,
     submitOrder,
@@ -76,7 +77,7 @@ export default function CheckoutPage() {
                 } catch {}
                 if (!prod) prod = getProductById(pId) || null;
                 if (prod) {
-                  addToCart(prod, parseInt(pQty || "1", 10) || 1, pColor || undefined);
+                  setDirectCart(prod, parseInt(pQty || "1", 10) || 1, pColor || undefined);
                 }
               }
             }
@@ -87,25 +88,22 @@ export default function CheckoutPage() {
         }
 
         if (productId) {
-          const alreadyInCart = cart.some((item) => item?.product?.id === productId);
-          if (!alreadyInCart && cart.length === 0) {
-            setIsLoadingUrlProduct(true);
-            let prod: Product | null = null;
-            try {
-              const res = await fetch(`${apiUrl}/api/products/${productId}`);
-              if (res.ok) {
-                const data = await res.json();
-                if (data.success && data.product) prod = data.product;
-              }
-            } catch {}
-            if (!prod) {
-              prod = getProductById(productId) || null;
+          setIsLoadingUrlProduct(true);
+          let prod: Product | null = null;
+          try {
+            const res = await fetch(`${apiUrl}/api/products/${productId}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.product) prod = data.product;
             }
-            if (prod) {
-              addToCart(prod, qtyParam, colorParam);
-            }
-            setIsLoadingUrlProduct(false);
+          } catch {}
+          if (!prod) {
+            prod = getProductById(productId) || null;
           }
+          if (prod) {
+            setDirectCart(prod, qtyParam, colorParam);
+          }
+          setIsLoadingUrlProduct(false);
         }
       } catch (err) {
         setIsLoadingUrlProduct(false);

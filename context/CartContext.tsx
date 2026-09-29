@@ -29,6 +29,7 @@ export interface OrderDetails {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product, quantity?: number, selectedColor?: string) => void;
+  setDirectCart: (product: Product, quantity?: number, selectedColor?: string) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -119,6 +120,18 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return [...prev, { product, quantity, selectedColor: colorToUse }];
     });
+  };
+
+  const setDirectCart = (product: Product, quantity = 1, selectedColor?: string) => {
+    if (!product || !product.id) return;
+    const colorToUse = selectedColor || product.selectedColor || (product.colors && product.colors[0]) || "";
+    const newCart = [{ product, quantity, selectedColor: colorToUse }];
+    setCart(newCart);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("ecoshine_cart", JSON.stringify(newCart));
+      } catch (e) {}
+    }
   };
 
   const removeFromCart = (productId: string) => {
@@ -280,6 +293,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       value={{
         cart,
         addToCart,
+        setDirectCart,
         removeFromCart,
         updateQuantity,
         clearCart,
